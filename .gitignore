@@ -1,0 +1,10 @@
+node_modules
+
+# docker files
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# src diretory
+src/.env.dev
+src/test

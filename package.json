@@ -1,0 +1,41 @@
+{
+  "name": "dogtalk",
+  "version": "1.0.0",
+  "description": "Um app com salas de bate papo aonde os usuários serão \"cachorros\"",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "dev": "NODE_ENV=dev nodemon src/index.js",
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Noctho01/dog-talk-app.git"
+  },
+  "keywords": [
+    "nodejs",
+    "js",
+    "chat",
+    "app",
+    "websocket",
+    "socket"
+  ],
+  "author": "Vinicius dos Santos Rodrigues [vinicius.dev01@gmail.com]",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Noctho01/dog-talk-app/issues"
+  },
+  "homepage": "https://github.com/Noctho01/dog-talk-app#readme",
+  "devDependencies": {
+    "jest": "^27.5.1",
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.3",
+    "mongoose": "^6.2.8",
+    "ws": "^8.5.0"
+  }
+}

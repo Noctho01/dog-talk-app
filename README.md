@@ -1,4 +1,4 @@
-<h1 align="center">DOG TALK 🐕 💬 🦮</h1>
+<h1 align="center">🐶 DOG TALK 💬</h1>
 <p align="center">Um app com salas de bate-papo aonde os usuários serão "cachorros"...</p>
 
 <br>

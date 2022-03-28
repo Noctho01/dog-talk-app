@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest src/tests/",
     "dev": "NODE_ENV=dev nodemon src/index.js",
     "start": "node src/index.js"
   },
@@ -32,6 +32,7 @@
     "nodemon": "^2.0.15"
   },
   "dependencies": {
+    "chalk": "^5.0.1",
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.3",

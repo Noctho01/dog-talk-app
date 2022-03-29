@@ -4,15 +4,15 @@ import { RoomController } from '../controller/RoomController.js';
 
 export const router = new Router();
 
-// login service
-router.route('/login')
-.get(UserController.renderLoginForm)
-//.post(UserController.acessChooseRooms)
-
 // register service
-router.route('/register')
-.get(UserController.renderRegisterForm)
+router
+.get('/register', UserController.renderRegisterForm)
 //.post(UserController.createUser)
+
+// login service
+router
+.get('/login', UserController.renderLoginForm)
+//.post(UserController.acessChooseRooms)
 
 // rooms service
 router

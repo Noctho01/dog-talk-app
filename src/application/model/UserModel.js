@@ -10,4 +10,4 @@ const userSchema = new Schema({
     bufferCommands: false,
 });
 
-export const User = model('Users', userSchema);
+export const UserModel = model('Users', userSchema);

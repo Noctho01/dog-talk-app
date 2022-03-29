@@ -38,7 +38,7 @@ describe('log.debug::', () => {
     });
 
     it('console.log', () => {
-        let path = 'tests/jobs/log.test.js', line = 50, msg = 'testando o log.debug';
+        let path = 'tests/jobs/log.test.js', line = 42, msg = 'testando o log.debug';
         log.debug(path, line, msg);
     });
 });

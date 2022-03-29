@@ -1,6 +1,3 @@
-import { Log as log } from "../../jobs/log.js";
-import { UserRepository } from "../repository/UserRepository";
-
 export class User {
 
     /**@private @type {String}*/ #id;

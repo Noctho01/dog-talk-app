@@ -22,8 +22,6 @@ class UserModel {
     }
 }
 
-
-
 describe('userDomain::', () => {
     const userFakeDatabase = new UserModel();
     const userRepository = new UserRepository(userFakeDatabase);

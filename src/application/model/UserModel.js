@@ -7,7 +7,6 @@ const userSchema = new Schema({
 }, {
     autoCreate: false,
     timestamps: true,
-    bufferCommands: false,
 });
 
 export const UserModel = model('Users', userSchema);

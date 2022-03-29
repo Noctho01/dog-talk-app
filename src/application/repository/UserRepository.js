@@ -22,6 +22,4 @@ export class UserRepository {
     async findOne(props, especification) {
         return await this._userModel.findOne(props, especification);
     }
-
-
 }

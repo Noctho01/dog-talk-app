@@ -1,10 +1,10 @@
 import { application } from "./application/application.js";
+import { Log as log } from "./jobs/log.js";
+import envConfig from "./envConfig.js";
 import { createServer } from 'http';
-import { config } from "dotenv";
-
-config({ path: process.env.NODE_ENV === 'dev' ? 'src/.env.dev' : null });
 
 export const server = createServer(application);
-const PORT = process.env.PORT || 3000;
 
-server.listen(PORT, () => console.log(`Server listening in port ${PORT}`));
+const PORT = envConfig.PORT || 3000;
+
+server.listen(PORT, () => log.debug('index.js is a main diretori', 10, `Server listening in port ${PORT}`));

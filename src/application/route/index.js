@@ -7,7 +7,7 @@ export const router = new Router();
 // register service
 router
 .get('/register', UserController.renderRegisterForm)
-//.post(UserController.createUser)
+.post('/register', UserController.registerUser)
 
 // login service
 router

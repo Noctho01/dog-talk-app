@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
 
 // My Modules
-import { router } from './route/index.js';
+import { router } from './route/routes.js';
 
 // configurando uso do __dirname
 const __filename = fileURLToPath(import.meta.url)

@@ -80,7 +80,7 @@ export class UserController {
             const token = jwt.sign({ id, email }, envConfig.SECRET_KEY, { expiresIn: '1h' });
             
             res
-            .status(201)
+            .status(301)
             .cookie('Authorization-Token', token, { httpOnly: true })
             .set('Content-Type', 'text/html')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
@@ -90,6 +90,45 @@ export class UserController {
 
         } catch (err) {
             log.web('post', '/login', 400);
+            log.error(err);
+            next(err.message);
+        }
+    }
+
+    static logoutUser(req, res, next) {
+        try {
+            res
+            .status(300)
+            .clearCookie('Authorization-Token')
+            .set('Content-Type', 'text/html')
+            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
+            .redirect('/login');
+
+            return log.web('delete', '/logout', 200);
+
+        } catch (err) {
+            log.web('delete', '/logout', 400);
+            log.error(err);
+            next(err.message);
+        }
+    }
+
+
+    static account(req, res, next) {
+        try {
+            const { id } = req.user;    
+            await userDomain.init(id);
+
+            res
+            .status(200)
+            .set('Content-Type', 'text/html')
+            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
+            .render('account', { title:'Suas Informaçoes', email: userDomain.email });
+
+            return log.web('get', '/account', 200);
+
+        } catch (err) {
+            log.web('get', '/account', 400);
             log.error(err);
             next(err.message);
         }

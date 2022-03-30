@@ -4,8 +4,6 @@ export class RoomController {
 
     static renderRoomsList(req, res, next) {
         try {
-            const payload = req.user;
-
             res
             .status(200)
             .set('Content-Type', 'text/html')

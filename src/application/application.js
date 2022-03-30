@@ -3,6 +3,7 @@ import path from 'path';
 import express from 'express';
 import { renderFile } from 'ejs';
 import { fileURLToPath } from 'url';
+import cookieParser from 'cookie-parser';
 
 // My Modules
 import { router } from './route/index.js';
@@ -26,7 +27,8 @@ application
 application
     .use(express.urlencoded({ extended: true }))
     .use(express.static('./views/public'))
-    .use(express.json());
+    .use(express.json())
+    .use(cookieParser());
 
 // middlewares
 application

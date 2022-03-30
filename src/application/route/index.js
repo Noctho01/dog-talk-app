@@ -1,22 +1,20 @@
 import { Router } from 'express';
 import { UserController } from '../controller/UserController.js';
 import { RoomController } from '../controller/RoomController.js';
+import { passport } from '../middlewares/authentication.js';
 
 export const router = new Router();
 
 // register service
-router
-.get('/register', UserController.renderRegisterForm)
-.post('/register', UserController.registerUser)
+router.route('/register')
+.get(UserController.renderRegisterForm)
+.post(UserController.registerUser)
 
 // login service
-router
-.get('/login', UserController.renderLoginForm)
-//.post(UserController.acessChooseRooms)
+router.route('/login')
+.get(UserController.renderLoginForm)
+.post(passport.authenticate('local', { session: false }), UserController.loginUser)
 
 // rooms service
 router
-.get('/rooms', RoomController.renderRoomsList)
-.get('/room/:id')
-.post('/canineprofile')
-.put('/room/:id')
+.get('/rooms', passport.authenticate('jwt', { session: false, failureRedirect: '/login' }), RoomController.renderRoomsList)

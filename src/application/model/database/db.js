@@ -2,25 +2,19 @@ import envConfig from '../../../envConfig.js';
 import { Log as log} from '../../../jobs/log.js';
 import mongoose from 'mongoose';
 
-const { Schema, model, connect, connection } = mongoose;
+const { Schema, model} = mongoose;
 const DB_URL = envConfig.DB_URL;
 
 main()
 
 async function main() {
+    await mongoose.connect(DB_URL);
     try {
-        // conectando ao banco de dados mongodb atlas
-        await connect(DB_URL);
-        log.debug('db.js', 12, 'db is connected');
-
-        // testando connexão
-        connection.on('error', err => {
-            if (err) throw err
-        });
-
+        mongoose.connection.on('error', err => { if (err) throw err });
+        log.debug('src/application/model/database/db.js', 14, 'db is connected');
     } catch (err) {
         log.error(err);
     }
 }
 
-export { model, Schema }
+export { model, Schema, mongoose}

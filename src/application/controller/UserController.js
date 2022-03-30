@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken';
+import envConfig from '../../envConfig.js';
 import { UserModel } from '../model/UserModel.js';
 import { UserRepository } from '../repository/UserRepository.js';
 import { User } from "../domain/User.js";
@@ -8,29 +10,23 @@ const userDomain = new User(userRepository);
 
 export class UserController {
 
-    static renderLoginForm(req, res, next) {
+    static renderRegisterForm(_, res, next) {
         try {
-            return res
+            res
             .status(200)
             .set('Content-Type', 'text/html')
-            .render('login', { title:'Login Usuario' });
-
-        } catch (err) {
-            next(err);
-        }         
-    }
-
-    static renderRegisterForm(req, res, next) {
-        try {
-            return res
-            .status(200)
-            .set('Content-Type', 'text/html')
+            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
             .render('register', { title:'Cadastro de Usuario' });
+            
+            return log.web('get', '/register', 200);
 
         } catch (err) {
-            next(err);
+            log.web('get', '/login', 500);
+            log.error(err);
+            next(err.message);
         }
     }
+
 
     static async registerUser(req, res, next) {
         const { email, password: pwdHash} = req.body;
@@ -40,17 +36,62 @@ export class UserController {
 
             await userDomain.save();
             log.debug('/UserController.js', 39, 'usuario criado');
-            log.web('post', '/register', 201);
 
-            return res
+            res
             .status(201)
             .set('Content-Type', 'text/html')
-            .redirect('/rooms');
+            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
+            .redirect('/login');
+
+            return log.web('post', '/register', 201);
 
         } catch (err) {
             log.web('post', '/register', 500);
             log.error(err);
-            next();
+            next(err.message);
+        }
+    }
+
+
+    static renderLoginForm(req, res, next) {
+        try {
+            if (req.cookies['Authorization-Token']) {
+                return res.redirect('/rooms');
+            }
+
+            res
+            .status(200)
+            .set('Content-Type', 'text/html')
+            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
+            .render('login', { title:'Login Usuario' });
+
+            return log.web('get', '/login', 200);
+
+        } catch (err) {
+            log.web('get', '/login', 500);
+            log.error(err);
+            next(err.message);
+        }         
+    }
+
+    static loginUser(req, res, next) {
+        const { id, email } = req.user;
+        try {
+            const token = jwt.sign({ id, email }, envConfig.SECRET_KEY, { expiresIn: '1h' });
+            
+            res
+            .status(201)
+            .cookie('Authorization-Token', token, { httpOnly: true })
+            .set('Content-Type', 'text/html')
+            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
+            .redirect('/rooms');
+            
+            return log.web('post', 'login', 201);
+
+        } catch (err) {
+            log.web('post', '/login', 400);
+            log.error(err);
+            next(err.message);
         }
     }
 }

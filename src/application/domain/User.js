@@ -1,22 +1,28 @@
 export class User {
 
-    /**@private @type {String}*/ #id;
-    /**@private @type {String}*/ #email;
-    /**@private @type {String}*/ #pwdHash;
+    /**
+     * @private @type {String}
+    */
+    #id;
+    
+    /**
+     * @private @type {String}
+    */ 
+    #email;
+    get email() { return this.#email }
+    
+    /**
+     * @private @type {String}
+    */ 
+    #pwdHash;
+    get pwdHash() { return this.#pwdHash }
+    
 
     /**
      * @param {UserRepository} repository 
      */
     constructor(repository) {
         this.repository = repository;
-    }
-
-    get email() {
-        return this.#email;
-    }
-
-    get pwdHash() {
-        return this.#pwdHash;
     }
 
     /**

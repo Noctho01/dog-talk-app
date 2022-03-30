@@ -19,10 +19,20 @@ export class UserRepository {
 
     /**
      * @param {Objects} props 
-     * @param {String} especification 
+     * @param {String} projection
      * @returns {Promise<UserModel>}
      */
-    async findOne(props, especification) {
-        return await this._userModel.findOne(props, especification);
+    async findOne(props, projection) {
+        return await this._userModel.findOne(props, projection);
+    }
+
+
+    /**
+     * @param {String} userid 
+     * @param {String} projection 
+     * @returns  {Promise<UserModel>}
+     */
+    async  findById(userid, projection) {
+        return await this._userModel.findById(userid, projection)
     }
 }

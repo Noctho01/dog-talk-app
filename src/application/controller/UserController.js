@@ -56,6 +56,7 @@ export class UserController {
     static renderLoginForm(req, res, next) {
         try {
             if (req.cookies['Authorization-Token']) {
+
                 return res.redirect('/rooms');
             }
 
@@ -77,11 +78,11 @@ export class UserController {
     static loginUser(req, res, next) {
         const { id, email } = req.user;
         try {
-            const token = jwt.sign({ id, email }, envConfig.SECRET_KEY, { expiresIn: '1h' });
+            const token = jwt.sign({ id, email }, envConfig.SECRET_KEY, { expiresIn: '1m' });
             
             res
             .status(301)
-            .cookie('Authorization-Token', token, { httpOnly: true })
+            .cookie('Authorization-Token', token, { httpOnly: true, maxAge: 60000})
             .set('Content-Type', 'text/html')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
             .redirect('/rooms');
@@ -114,7 +115,7 @@ export class UserController {
     }
 
 
-    static account(req, res, next) {
+    static async account(req, res, next) {
         try {
             const { id } = req.user;    
             await userDomain.init(id);

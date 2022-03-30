@@ -3,6 +3,8 @@ import { Log as log } from "../../jobs/log.js";
 export class RoomController {
 
     static renderRoomsList(req, res, next) {
+
+        console.log(req.user);
         try {
             res
             .status(200)

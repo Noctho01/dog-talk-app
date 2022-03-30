@@ -4,12 +4,12 @@ import { UserRepository } from '../../../application/repository/UserRepository.j
 
 class UserModel {
     constructor() {
-        this.userDb = [{ email: 'vini123@gmail.com', pwdHash: '123123' }];
+        this.userDb = [{ _id:'123456', email: 'vini123@gmail.com', pwdHash: '123123' }];
     }
 
     async findOne(props) {
         let findeds;
-        await this.userDb.forEach(user => {
+        this.userDb.forEach(user => {
             Object.keys(props).forEach(prop => {
                 if (user[prop] === props[prop]) findeds = user;
             });
@@ -18,7 +18,12 @@ class UserModel {
     }
 
     async create(props) {
-        await this.userDb.push(props);
+        console.log(props)
+        this.userDb.push(props);
+    }
+
+    findById(userid) {
+        return this.userDb.find(user => user._id === userid);
     }
 }
 
@@ -74,5 +79,27 @@ describe('userDomain::', () => {
         expect(userFakeDatabase.userDb.length).toBeGreaterThan(0);
         userFakeDatabase.userDb = userDbRestalrado;
         userDomain = new User(userRepository);
+    });
+
+    it('userDomain.init() if a function', () => {
+        expect(typeof userDomain.init).toBe('function');
+    });
+
+    it('userDomain.init() almazena os dados resgatados do banco de dados', async () => {
+        let createDatas = {
+            _id: '123456789',
+            email: 'testando@gmail.com',
+            pwdHash: '321321',
+        }
+
+        await userDomain.create(createDatas);
+        userDomain.save();
+
+        userDomain = new User(userRepository);
+        await userDomain.init(createDatas._id);
+        
+        await expect(userDomain.id).toEqual(createDatas._id);
+        await expect(userDomain.email).toEqual(createDatas.email);
+        await expect(userDomain.pwdHash).toEqual(createDatas.pwdHash);
     });
 });

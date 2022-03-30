@@ -7,7 +7,7 @@ export class Log {
      * @param {Error} objectError 
      */
     static error(objectError) {
-        throw new Error(`
+        log(`
         ${chalk.bold.red('ERROR!!')}
         ${chalk.bold.red('CODE:')} ${chalk.bold.white(objectError.code)} ${chalk.bold.red('MESSAGE:')} ${chalk.bold.white(objectError.message)}        
         ${chalk.bold.red('STACK:')} ${chalk.bold.white(objectError.stack)}

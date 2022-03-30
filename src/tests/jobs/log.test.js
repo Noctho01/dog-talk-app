@@ -11,12 +11,12 @@ describe('log.error::', () => {
         expect(typeof log.error).toBe('function');
     });
     
-    it('retorna um erro', () => {
+    it('console.log', () => {
         try {
             let nome = 'vinicius';
             nome.vinicius.idade = 25;
         } catch (err) {
-            expect(() => log.error(err)).toThrow();
+            log.error(err);
         }
     });
 });

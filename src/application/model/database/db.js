@@ -2,7 +2,7 @@ import envConfig from '../../../envConfig.js';
 import { Log as log} from '../../../jobs/log.js';
 import mongoose from 'mongoose';
 
-const { Schema, model} = mongoose;
+const { Schema, model, Types} = mongoose;
 const DB_URL = envConfig.DB_URL;
 
 main()
@@ -17,4 +17,4 @@ async function main() {
     }
 }
 
-export { model, Schema, mongoose}
+export { model, Schema, Types, mongoose}

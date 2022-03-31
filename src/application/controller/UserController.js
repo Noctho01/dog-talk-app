@@ -1,20 +1,25 @@
 import jwt from 'jsonwebtoken';
 import envConfig from '../../envConfig.js';
+import { Types } from '../model/database/db.js';
 import { UserModel } from '../model/UserModel.js';
 import { UserRepository } from '../repository/UserRepository.js';
 import { User } from "../domain/User.js";
 import { Log as log} from '../../jobs/log.js';
 
 const userRepository = new UserRepository(UserModel);
-const userDomain = new User(userRepository);
+User.initRepository(userRepository);
+
 
 export class UserController {
 
     static async create(req, res, next) {
         try {
             const { email, password: pwdHash} = req.body;
-            await userDomain.init({ email, pwdHash });
-            log.debug('/UserController.js', 39, 'usuario instanciado');
+            const userDomain = new User(
+                new Types.ObjectId(),
+                email,
+                pwdHash
+            );
             
             await userDomain.save();
             log.debug('/UserController.js', 39, 'usuario criado');
@@ -32,7 +37,7 @@ export class UserController {
         } catch (err) {
             log.web('post', '/user', 500);
             log.error(err);
-            next(err.message);
+            next({ error: error.message });
         }
     }
 
@@ -56,7 +61,7 @@ export class UserController {
         } catch (err) {
             log.web('post', '/user/login', 400);
             log.error(err);
-            next(err.message);
+            next({ error: error.message });
         }
     }
 
@@ -76,15 +81,14 @@ export class UserController {
         } catch (err) {
             log.web('delete', '/user/logout', 400);
             log.error(err);
-            next(err.message);
+            next({ error: error.message });
         }
     }
 
-
-    static async getUser(req, res, next) {
+    static async getUserEmail(req, res, next) {
         try {
-            const { id } = req.user;    
-            await userDomain.get(id);
+            const { id } = req.user;
+            const userDomain = await User.initWithId(id);
 
             res
             .set('Content-Type', 'application/json')
@@ -97,9 +101,33 @@ export class UserController {
             .json({ email: userDomain.email });
 
         } catch (err) {
-            log.web('get', '/account', 400);
+            log.web('get', '/user/email', 400);
             log.error(err);
-            next(err.message);
+            next({ error: error.message });
+        }
+    }
+
+    static async delete(req, res, next) {
+        try {
+            const { id } = req.user;
+            const domainUser = User.initWithId(id);
+            await domainUser.delete();
+
+            res
+            .clearCookie('Authorization-Token')
+            .set('Content-Type', 'application/json')
+            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
+
+            log.web('delete', '/user', 200);
+
+            return res
+            .status(200)
+            .json({ message: 'user deleted' });
+
+        } catch (err) {
+            log.web('delete', '/user', 400);
+            log.error(err);
+            next({ error: error.message });
         }
     }
 }

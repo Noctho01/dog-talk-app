@@ -35,4 +35,9 @@ export class UserRepository {
     async  findById(userid, projection) {
         return await this._userModel.findById(userid, projection)
     }
+
+
+    async deleteById(userid) {
+        return await this._userModel.deleteOne({ _id: userid });
+    }
 }

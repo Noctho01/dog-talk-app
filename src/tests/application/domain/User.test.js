@@ -11,8 +11,6 @@ describe('userDomain::', () => {
     const userRepository = new UserRepository(userFakeDatabase);
     User.initRepository(userRepository);
 
-    console.log(userFakeDatabase.userDb);
-
     it('User.repository esta instanciado', () => expect(User.repositoryExist()).toBe(true));
 
     it('userDomain é uma instancia de User', () => {
@@ -71,6 +69,10 @@ describe('userDomain::', () => {
         }
     });
 
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
     it('User.initWithId() sem parametro resulta em erro', async () => {
         await expect(User.initWithId()).rejects.toThrowError('o id do usuario não foi informado');
     });
@@ -89,5 +91,25 @@ describe('userDomain::', () => {
         await expect(userDomain.email).toEqual('vinicius@gmail.com');
     });
 
-    console.log('DEPOIS DE TUDO!!', userFakeDatabase.userDb);
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    it('userDomain.delete() quando objeto não existe', async () => {
+        try {
+            let userDomain = await User.initWithId('321');
+            await userDomain.delete();
+        } catch (err) {
+            expect(err.message).toEqual('Este usuario não existe');
+        }
+    });
+
+    it('userDomain.delete() objeto deletado com sucesso', async () => {
+        let userDomain = await User.initWithId('123');
+        await userDomain.delete();
+
+        let user = userFakeDatabase.userDb.find(user => user._id === userDomain.id );
+
+        expect(user).toBe(undefined);
+    });
 });

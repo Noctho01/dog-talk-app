@@ -17,7 +17,14 @@ export class UserModelTest {
         this.userDb.push(props);
     }
 
-    findById(userid) {
+    async findById(userid) {
         return this.userDb.find(user => user._id === userid);
+    }
+
+    async deleteOne(prop) {
+        const user = this.userDb.find(user => user._id === prop._id);
+        if (!user) return { deletedCount: 0 };
+        this.userDb.splice(this.userDb.indexOf(user), 1);
+        return { deletedCount: 1 };
     }
 }

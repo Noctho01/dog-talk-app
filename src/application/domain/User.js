@@ -31,19 +31,49 @@ export class User {
 
     /**
      * @description Metodo Statico de inicialização de repositorio
-     * @param {UserRepository} repository 
+     * @param {UserRepository} repository
      * @static
+     * @public
      */
     static initRepository(repository) {
         User.#repository = repository;
     }
 
+    /**
+     * @description Retorna resposta de confirmação da existencia de um repositorio no objeto User
+     * @static
+     * @public
+     * @returns {Boolean}
+     */
     static repositoryExist() {
         if(User.#repository) return true;
         return false;
     }
 
-    // Create User in database
+    /**
+     * @description aduciona os dados do documento refente ao id na instancia de User
+     * @param {String} userid 
+     * @static
+     * @public
+     * @returns {User}
+     */
+     static async initWithId(userid) {
+        if (!userid || userid === undefined || userid === null) throw new Error('o id do usuario não foi informado');
+        const user = await User.#repository.findById(userid, '_id email pwdHash');
+        if (!user) throw new Error('Este usuario não existe');
+        
+        return new User(
+            user._id,
+            user.email,
+            user.pwdHash
+        );
+    }
+
+
+    /**
+     * @description Metodo insere objeto<documento> ao banco de dados
+     * @public
+     */
     async save() {
         if (!this.#id) throw new Error('id não foi definido');
         if (!this.#email) throw new Error('email não foi definido');
@@ -60,19 +90,12 @@ export class User {
     }
 
 
-    /**
-     * @description aduciona os dados do documento refente ao id na instancia de User
-     * @param {String} userid 
-     */
-    static async initWithId(userid) {
-        if (!userid || userid === undefined || userid === null) throw new Error('o id do usuario não foi informado');
-        const user = await User.#repository.findById(userid, '_id email pwdHash');
-        if (!user) throw new Error('Este usuario não existe');
-        
-        return new User(
-            user._id,
-            user.email,
-            user.pwdHash
-        );
+    async delete() {
+        if (!this.#id) throw new Error('id não foi definido');
+        if (!this.#email) throw new Error('email não foi definido');
+        if (!this.#pwdHash) throw new Error('pwdHash não foi definido');
+
+        const resultDelete = await User.#repository.deleteById(this.#id);
+        if (resultDelete.deletedCount === 0) throw new Error('processo de deletar o usuario falhou');
     }
 }

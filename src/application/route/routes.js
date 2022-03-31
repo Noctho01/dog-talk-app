@@ -8,13 +8,14 @@ export const router = new Router();
 // Login and Logout user
 router
 .post('/user/login', passport.authenticate('local', { session: false }), UserController.loginUser)
-.delete('/user/logout', passport.authenticate('jwt', { session: false, failureRedirect:'/login' }), UserController.logoutUser)
+.delete('/user/logout', passport.authenticate('jwt', { session: false }), UserController.logoutUser)
 
 // User Crud
 router
-.get('/user/:userid', passport.authenticate('jwt', { session: false, failureRedirect: '/login' }), UserController.getUser)
 .post('/user', UserController.create)
+.get('/user/email/', passport.authenticate('jwt', { session: false }), UserController.getUserEmail)
+.delete('/user', passport.authenticate('jwt', { session: false }), UserController.delete)
 
 // Rooms
 router
-.get('/rooms', passport.authenticate('jwt', { session: false, failureRedirect: '/login' }), RoomController.getRooms)
+.get('/rooms', passport.authenticate('jwt', { session: false }), RoomController.getRooms)

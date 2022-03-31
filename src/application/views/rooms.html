@@ -4,11 +4,14 @@
         <meta charset="utf-8">
     </head>
     <body>
+        <form action="/logout", method="DELETE">
+            <input type="submit" value="l">
+        </form>
         <header>
             <div id="menu">
                 <ul>
-                    <li><form action="/logout/" method="delete"><input type="submit" value="Sair"></form></li>
-                    <li><form action="/accont" method="GET"><input type="submit" value="Meus Dados"></form></li>
+                    <li><form action="/logout"  method="get"><input type="submit" value="Sair"></form></li>
+                    <li><form action="/account" method="get"><input type="submit" value="Meus Dados"></form></li>
                 </ul>
             </div>
         </header>

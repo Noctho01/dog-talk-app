@@ -1,7 +1,6 @@
 // Libs
 import path from 'path';
 import express from 'express';
-import { renderFile } from 'ejs';
 import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
 

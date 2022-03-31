@@ -10,87 +10,51 @@ const userDomain = new User(userRepository);
 
 export class UserController {
 
-    static renderRegisterForm(_, res, next) {
+    static async create(req, res, next) {
         try {
-            res
-            .status(200)
-            .set('Content-Type', 'text/html')
-            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
-            .render('register', { title:'Cadastro de Usuario' });
-            
-            return log.web('get', '/register', 200);
-
-        } catch (err) {
-            log.web('get', '/login', 500);
-            log.error(err);
-            next(err.message);
-        }
-    }
-
-
-    static async registerUser(req, res, next) {
-        const { email, password: pwdHash} = req.body;
-        try {
-            await userDomain.create({ email, pwdHash });
+            const { email, password: pwdHash} = req.body;
+            await userDomain.init({ email, pwdHash });
             log.debug('/UserController.js', 39, 'usuario instanciado');
-
+            
             await userDomain.save();
             log.debug('/UserController.js', 39, 'usuario criado');
 
             res
+            .set('Content-Type', 'application/json')
+            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11');
+            
+            log.web('post', '/user', 201);
+            
+            return res
             .status(201)
-            .set('Content-Type', 'text/html')
-            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
-            .redirect('/login');
-
-            return log.web('post', '/register', 201);
+            .json({ message: 'user created'});
 
         } catch (err) {
-            log.web('post', '/register', 500);
+            log.web('post', '/user', 500);
             log.error(err);
             next(err.message);
         }
     }
 
 
-    static renderLoginForm(req, res, next) {
-        try {
-            if (req.cookies['Authorization-Token']) {
-
-                return res.redirect('/rooms');
-            }
-
-            res
-            .status(200)
-            .set('Content-Type', 'text/html')
-            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
-            .render('login', { title:'Login Usuario' });
-
-            return log.web('get', '/login', 200);
-
-        } catch (err) {
-            log.web('get', '/login', 500);
-            log.error(err);
-            next(err.message);
-        }         
-    }
-
     static loginUser(req, res, next) {
-        const { id, email } = req.user;
         try {
+            const { id, email } = req.user;
             const token = jwt.sign({ id, email }, envConfig.SECRET_KEY, { expiresIn: '1m' });
-            
+
             res
-            .status(301)
             .cookie('Authorization-Token', token, { httpOnly: true, maxAge: 60000})
-            .set('Content-Type', 'text/html')
+            .set('Content-Type', 'application/json')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
-            .redirect('/rooms');
+
+            log.web('post', '/user/login', 201);
             
-            return log.web('post', 'login', 201);
+            return res
+            .status(301)
+            .json({ message: 'user token created' });
 
         } catch (err) {
-            log.web('post', '/login', 400);
+            log.web('post', '/user/login', 400);
             log.error(err);
             next(err.message);
         }
@@ -99,34 +63,38 @@ export class UserController {
     static logoutUser(req, res, next) {
         try {
             res
-            .status(300)
             .clearCookie('Authorization-Token')
-            .set('Content-Type', 'text/html')
+            .set('Content-Type', 'application/json')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
-            .redirect('/login');
 
-            return log.web('delete', '/logout', 200);
+            log.web('delete', '/user/logout', 200);
+
+            return res
+            .status(300)
+            .json({ message: 'user token deleted' });
 
         } catch (err) {
-            log.web('delete', '/logout', 400);
+            log.web('delete', '/user/logout', 400);
             log.error(err);
             next(err.message);
         }
     }
 
 
-    static async account(req, res, next) {
+    static async getUser(req, res, next) {
         try {
             const { id } = req.user;    
-            await userDomain.init(id);
+            await userDomain.get(id);
 
             res
-            .status(200)
-            .set('Content-Type', 'text/html')
+            .set('Content-Type', 'application/json')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
-            .render('account', { title:'Suas Informaçoes', email: userDomain.email });
 
-            return log.web('get', '/account', 200);
+            log.web('get', '/account', 200);
+
+            return res
+            .status(200)
+            .json({ email: userDomain.email });
 
         } catch (err) {
             log.web('get', '/account', 400);

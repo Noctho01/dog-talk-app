@@ -1,72 +1,78 @@
 export class User {
 
-    /**
-     * @private @type {String}
-    */
+    static #repository;
+
+    /**@type {String<ObjectID>} */
     #id;
-    get id() { return this.#id }
-    
-    /**
-     * @private @type {String}
-    */ 
+
+    /**@type {String} */
     #email;
-    get email() { return this.#email }
-    
-    /**
-     * @private @type {String}
-    */ 
+
+    /**@type {String} */
     #pwdHash;
+
+    /**
+     * @description Constructor Method
+     * @param {String<ObjectID>} id 
+     * @param {String} email 
+     * @param {String} pwdHash 
+     */
+    constructor(id, email, pwdHash) {
+        this.#id = id;
+        this.#email = email;
+        this.#pwdHash = pwdHash;
+    }
+
+    // Getter Methods
+    get id() { return this.#id }
+    get email() { return this.#email }
     get pwdHash() { return this.#pwdHash }
-    
+
 
     /**
+     * @description Metodo Statico de inicialização de repositorio
      * @param {UserRepository} repository 
+     * @static
      */
-    constructor(repository) {
-        this.repository = repository;
+    static initRepository(repository) {
+        User.#repository = repository;
     }
 
-    /**
-     * @param {Objects} userData 
-     */
-    async create(userData) {
-        if (!userData) throw new Error('parametro <userData> é undefined');
-
-        // testando se o userData.email já está em uso no banco de dados
-        if (!userData.email) throw new Error('informe o email do usuario em <userData.email>')
-        const userWithEmails = await this.repository.findOne({ email: userData.email}, 'email');
-        if (userWithEmails) throw new Error('Este email já está em uso');
-
-        // salvando dados do usuario na instancia
-        this.#id = userData._id;
-        this.#email = userData.email;
-        this.#pwdHash = userData.pwdHash;
+    static repositoryExist() {
+        if(User.#repository) return true;
+        return false;
     }
 
-
+    // Create User in database
     async save() {
-        try {
-            if (!this.#email || !this.#pwdHash) throw new Error('dados invalidos para salvar no banco de dados');
-            await this.repository.create({ _id: this.#id,  email: this.#email, pwdHash: this.#pwdHash });
-        } catch (err) {
-            throw err;
-        }
+        if (!this.#id) throw new Error('id não foi definido');
+        if (!this.#email) throw new Error('email não foi definido');
+        if (!this.#pwdHash) throw new Error('pwdHash não foi definido');
+
+        const userByEmail = await User.#repository.findOne({ email: this.#email }, 'email');
+        if (userByEmail) throw new Error('Este email já está em uso');
+        
+        await User.#repository.create({
+            _id: this.#id,
+            email: this.#email,
+            pwdHash: this.#pwdHash
+        });
     }
 
 
     /**
+     * @description aduciona os dados do documento refente ao id na instancia de User
      * @param {String} userid 
      */
-    async init(userid) {
-        if (this.#id) throw new Error('Id já indentificado');
-        if (this.#email) throw new Error('Email já indentificado');
-        if (this.#pwdHash) throw new Error('Senha já indentificada');
-
-        const user = await this.repository.findById(userid, '_id email pwdHash');
+    static async initWithId(userid) {
+        if (!userid || userid === undefined || userid === null) throw new Error('o id do usuario não foi informado');
+        const user = await User.#repository.findById(userid, '_id email pwdHash');
         if (!user) throw new Error('Este usuario não existe');
-
-        this.#id = user._id;
-        this.#email = user.email;
-        this.#pwdHash = user.pwdHash;
+        
+        return new User(
+            user._id,
+            user.email,
+            user.pwdHash
+        );
     }
 }

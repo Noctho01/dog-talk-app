@@ -1,105 +1,93 @@
 import { Log as log } from '../../../jobs/log.js';
 import { User } from "../../../application/domain/User.js";
 import { UserRepository } from '../../../application/repository/UserRepository.js';
+import { UserModelTest } from './EntityModel/UserModelTest.js';
 
-class UserModel {
-    constructor() {
-        this.userDb = [{ _id:'123456', email: 'vini123@gmail.com', pwdHash: '123123' }];
-    }
-
-    async findOne(props) {
-        let findeds;
-        this.userDb.forEach(user => {
-            Object.keys(props).forEach(prop => {
-                if (user[prop] === props[prop]) findeds = user;
-            });
-        });
-        return findeds;
-    }
-
-    async create(props) {
-        console.log(props)
-        this.userDb.push(props);
-    }
-
-    findById(userid) {
-        return this.userDb.find(user => user._id === userid);
-    }
-}
-
+/**
+ * @description O que testar no Dominio User
+ */
 describe('userDomain::', () => {
-    const userFakeDatabase = new UserModel();
+    const userFakeDatabase = new UserModelTest();
     const userRepository = new UserRepository(userFakeDatabase);
-    let userDomain = new User(userRepository);
+    User.initRepository(userRepository);
 
-    it('instance of User', () => expect(userDomain).toBeInstanceOf(User));
-    
-    it('userDomain.create if a function', () => expect(typeof userDomain.create).toBe('function'));
-    
-    it('userDomain.create(<none params>)', async () => await expect(userDomain.create()).rejects.toThrowError('parametro <userData> é undefined'));
-    
-    it('userDomain.create(newUser) email já esta em uso', async () => {
-        let newUser = { email: 'vini123@gmail.com', pwdHash: '123123' };
-        await expect(userDomain.create(newUser)).rejects.toThrowError('Este email já está em uso');
+    console.log(userFakeDatabase.userDb);
+
+    it('User.repository esta instanciado', () => expect(User.repositoryExist()).toBe(true));
+
+    it('userDomain é uma instancia de User', () => {
+        let userDomina = new User('123456789', 'vinicius@gmail.com', '321654');
+        expect(userDomina).toBeInstanceOf(User);
     });
 
-    it('userDomain.create(newUser) newUser.email === undefined || null', async () => {
-        let newUser = { nome: 'vinicius', pwdHash: '123123' };
-        await expect(userDomain.create(newUser)).rejects.toThrowError('informe o email do usuario em <userData.email>');
-    });
-
-    it('userDomain.create(newUser) successful', async () => {
-        let newUser = { email: 'maria123@gmail.com', pwdHash: '123123' };
-        await expect(userDomain.create(newUser)).toBeTruthy();
-        userDomain = new User(userRepository);
-    });
-
-    it('userDomain possui dados salvos na instancia', async () => {
-        let newUser = { email: 'maria123@gmail.com', pwdHash: '123123' };
-        await userDomain.create(newUser);
-        await expect(userDomain.email).toEqual(newUser.email);
-        await expect(userDomain.pwdHash).toEqual(newUser.pwdHash);
-        userDomain = new User(userRepository);
-    });
-
-    it('userDomain.save() retorna erro', async () => {
-        await expect(userDomain.save()).rejects.toThrowError('dados invalidos para salvar no banco de dados');
-        userDomain = new User(userRepository);
-    })
-
-    it('userDomain.save() successful', async () => {
-        let newUser = { email: 'maria123@gmail.com', pwdHash: '123123' };
-        const userDbRestalrado = userFakeDatabase.userDb;
-        log.debug('User.test.js', 69, `valor de userFakeDatabase.userDb.length ${userFakeDatabase.userDb.length} antes do metodo save`);
-        
-        await userDomain.create(newUser);
-        await userDomain.save();
-        log.debug('User.test.js', 69, `valor de userFakeDatabase.userDb.length ${userFakeDatabase.userDb.length} apos o metodo save`);
-
-        expect(userFakeDatabase.userDb.length).toBeGreaterThan(0);
-        userFakeDatabase.userDb = userDbRestalrado;
-        userDomain = new User(userRepository);
-    });
-
-    it('userDomain.init() if a function', () => {
-        expect(typeof userDomain.init).toBe('function');
-    });
-
-    it('userDomain.init() almazena os dados resgatados do banco de dados', async () => {
-        let createDatas = {
-            _id: '123456789',
-            email: 'testando@gmail.com',
-            pwdHash: '321321',
+    it('new User(<props>) error', () => {
+        try {
+            let userDomain = new User('1', '2', '3', '4');
+        } catch (err) {
+            expect(err).toThrow();
         }
-
-        await userDomain.create(createDatas);
-        userDomain.save();
-
-        userDomain = new User(userRepository);
-        await userDomain.init(createDatas._id);
-        
-        await expect(userDomain.id).toEqual(createDatas._id);
-        await expect(userDomain.email).toEqual(createDatas.email);
-        await expect(userDomain.pwdHash).toEqual(createDatas.pwdHash);
     });
+
+    it('new User(<props> success)', () => {
+        try {
+            let userDomain = new User('a', 'b', 'c');
+        } catch (err) {
+            expect(err).not.toThrow();
+        }
+    });
+
+    it('userDomain.save() retorna erro "id não foi definido"', async () => {
+        // está faltando o parametro <id>
+        let userDomain  = new User(null, 'meuEmail@email.com', '123456'); 
+        await expect(userDomain.save()).rejects.toThrowError("id não foi definido");
+    });
+
+    it('userDomain.save() retorna erro "email não foi definido"', async () => {
+        // está faltando o parametro <email>
+        let userDomain  = new User('123456', null, '123456'); 
+        await expect(userDomain.save()).rejects.toThrowError("email não foi definido");
+    });
+
+    it('userDomain.save() retorna erro "pwdHash não foi definido"', async () => {
+        // está faltando o parametro <pwdHash>
+        let userDomain  = new User('123456', 'meuEmail@email.com'); 
+        await expect(userDomain.save()).rejects.toThrowError("pwdHash não foi definido");
+    });
+
+    it('dados da instancia userDomain foram salvos no banco de dados', async () => {
+        let noDB = userFakeDatabase.userDb.length;
+        let userDomain = new User('id_do_usuario', 'meuEmail@gmail.com', 'minhaSenha123');
+        await userDomain.save();
+        expect(userFakeDatabase.userDb.length).toBeGreaterThan(noDB);
+    });
+
+    it('dados da instancia userDomain não foram salvos no banco de dados', async () => {
+        let noDB = userFakeDatabase.userDb.length;
+        let userDomain = new User('id_do_usuario', 'meuEmail@gmail.com', 'minhaoutraSenha123');
+        try {
+            await userDomain.save();
+        } catch (err) {
+            expect(userFakeDatabase.userDb.length).toEqual(noDB);
+        }
+    });
+
+    it('User.initWithId() sem parametro resulta em erro', async () => {
+        await expect(User.initWithId()).rejects.toThrowError('o id do usuario não foi informado');
+    });
+
+    it('User.initWithId(userid) caso usuario não exista retorna um erro ', async () => {
+        await expect(User.initWithId('12')).rejects.toThrowError('Este usuario não existe');
+    });
+
+    it('User.initWithId(userid) é retorna uma instancia de User', async () => {
+        let userDomain = await User.initWithId('123');
+        await expect(userDomain).toBeInstanceOf(User)
+    });
+
+    it('User.initWithId(userid) caso o usuario exista', async () => {
+        let userDomain = await User.initWithId('123');
+        await expect(userDomain.email).toEqual('vinicius@gmail.com');
+    });
+
+    console.log('DEPOIS DE TUDO!!', userFakeDatabase.userDb);
 });

@@ -5,24 +5,16 @@ import { passport } from '../middlewares/authentication.js';
 
 export const router = new Router();
 
-// register service
-router.route('/register')
-.get(UserController.renderRegisterForm)
-.post(UserController.registerUser)
-
-// login service
-router.route('/login')
-.get(UserController.renderLoginForm)
-.post(passport.authenticate('local', { session: false }), UserController.loginUser)
-
-// logout
+// Login and Logout user
 router
-.delete('/logout', passport.authenticate('jwt', { session: false, failureRedirect:'/login' }), UserController.logoutUser)
+.post('/user/login', passport.authenticate('local', { session: false }), UserController.loginUser)
+.delete('/user/logout', passport.authenticate('jwt', { session: false, failureRedirect:'/login' }), UserController.logoutUser)
 
-// Accont
+// User Crud
 router
-.get('/accont', passport.authenticate('jwt', { session: false, failureRedirect: '/login' }), UserController.account)
+.get('/user/:userid', passport.authenticate('jwt', { session: false, failureRedirect: '/login' }), UserController.getUser)
+.post('/user', UserController.create)
 
-// rooms service
+// Rooms
 router
-.get('/rooms', passport.authenticate('jwt', { session: false, failureRedirect: '/login' }), RoomController.renderRoomsList)
+.get('/rooms', passport.authenticate('jwt', { session: false, failureRedirect: '/login' }), RoomController.getRooms)

@@ -4,8 +4,11 @@
   "description": "Um app com salas de bate papo aonde os usuários serão \"cachorros\"",
   "main": "index.js",
   "type": "module",
+  "jest": {
+      "verbose": true
+  },
   "scripts": {
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest src/tests/application/domain/User.test.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --coverage",
     "dev": "NODE_ENV=dev nodemon src/index.js",
     "start": "node src/index.js"
   },

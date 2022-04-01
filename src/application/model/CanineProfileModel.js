@@ -9,4 +9,4 @@ const canineProfileSchema = new Schema({
     bufferCommands: false,
 });
 
-export const CanineProfile = model('CanineProfiles', canineProfileSchema);
+export const CanineProfileModel = model('CanineProfiles', canineProfileSchema);

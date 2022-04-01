@@ -1,7 +1,7 @@
-import { application } from "./application/application.js";
-import { Log as log } from "./jobs/log.js";
 import envConfig from "./envConfig.js";
 import { createServer } from 'http';
+import { Log as log } from "./jobs/log.js";
+import { application } from "./application/application.js";
 
 export const server = createServer(application);
 

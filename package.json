@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/Noctho01/dog-talk-app#readme",
   "devDependencies": {
+    "axios": "^0.26.1",
     "jest": "^27.5.1",
     "nodemon": "^2.0.15"
   },

@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 
 // My Modules
 import { router } from './route/routes.js';
+import errorMiddleware from './middlewares/errorMiddleware.js';
 
 // instaniando application
 const application = express();
@@ -16,6 +17,7 @@ application
 
 // middlewares
 application
-.use(router);
+.use(router)
+.use(errorMiddleware);
 
 export { application }

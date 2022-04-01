@@ -4,13 +4,13 @@ export class RoomController {
 
     static getRooms(req, res, next) {
         try {
-            log.web('get', '/register', 200);
-
-            return res
+            res
             .status(200)
-            .set('Content-Type', 'text/html')
+            .set('Content-Type', 'application/json')
             .set('X-Powered-By', 'PHP Admin')
-            .render('rooms', { title:"Salas de Bate-Papo" });
+            .json({ message: 'lista de rooms' });
+
+            return log.web('get', '/register', 200);
             
         } catch (err) {
             log.web('get', '/rooms', 500);

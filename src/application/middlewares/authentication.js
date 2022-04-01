@@ -7,44 +7,47 @@ import envConfig from '../../envConfig.js';
 
 const userRepository = new UserRepository(UserModel);
 
-// estrategia local
-passport.use(new LocalStrategy({
+// LocalStrategy Options
+const l_strategyOptions = {
     usernameField: 'email',
     session: false
-}, async (username, password, done) => {
-    try {
-        const user = await userRepository.findOne({
-            email: username,
-            pwdHash: password
-        }, 'email _id');
-
-        if (user === null || user === undefined) throw new Error('Email ou Senha incorretos');
-
-        return done(null, {
-            id: user._id,
-            email: user.email
-        });
-
-    } catch (err) {
-        return done(err.message, false);
-    }
-}));
-
-// my function extract
-const cookieExtractor = req => {
-    if (req && req.cookies) {
-        return req.cookies['Authorization-Token'];
-    }
-    return undefined
 }
 
-//estrategia jwt
-passport.use(new JwtStrategy({
+// LocalStrategy Callback
+const l_strategyCb = async (username, password, done) => {
+    const user = await userRepository.findOne({ email: username, pwdHash: password }, 'email _id');
+    if (user === null || user === undefined) {
+        return done({ message: 'Email ou Senha incorretos' }, false);
+    }
+    
+    return done(null, { id: user._id, email: user.email });
+}
+
+// My function extract JWT
+const cookieExtractor = req => {
+    if (req && req.cookies) {
+        const token = req.cookies['Authorization-Token'];
+        if (!token) throw new Error('Não existe token');
+        return token;
+    }
+    
+    return undefined;
+}
+
+// JwtStrategy Options
+const j_strategyOptions = {
     jwtFromRequest: cookieExtractor,
     secretOrKey: envConfig.SECRET_KEY,
     session: false 
-}, (jwt_payload, done) => {
-    return done(null, jwt_payload);
-}));
+}
+
+// JwtStrategy Callback
+const j_strategyCb = (payload, done) => {
+    return done(null, payload);
+}
+
+// Strategys
+passport.use(new LocalStrategy(l_strategyOptions, l_strategyCb));
+passport.use(new JwtStrategy(j_strategyOptions, j_strategyCb));
 
 export { passport }

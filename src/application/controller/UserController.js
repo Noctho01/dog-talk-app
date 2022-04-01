@@ -41,22 +41,19 @@ export class UserController {
         }
     }
 
-
     static loginUser(req, res, next) {
-        try {
+        try {                   
             const { id, email } = req.user;
             const token = jwt.sign({ id, email }, envConfig.SECRET_KEY, { expiresIn: '1m' });
 
             res
-            .cookie('Authorization-Token', token, { httpOnly: true, maxAge: 60000})
+            .status(201)
             .set('Content-Type', 'application/json')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
-
-            log.web('post', '/user/login', 201);
-            
-            return res
-            .status(301)
+            .cookie('Authorization-Token', token, { httpOnly: true, maxAge: 60000})
             .json({ message: 'user token created' });
+
+            return log.web('post', '/user/login', 201);
 
         } catch (err) {
             log.web('post', '/user/login', 400);
@@ -68,15 +65,13 @@ export class UserController {
     static logoutUser(req, res, next) {
         try {
             res
+            .status(200)
             .clearCookie('Authorization-Token')
             .set('Content-Type', 'application/json')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
-
-            log.web('delete', '/user/logout', 200);
-
-            return res
-            .status(300)
             .json({ message: 'user token deleted' });
+
+            return log.web('delete', '/user/logout', 200);
 
         } catch (err) {
             log.web('delete', '/user/logout', 400);
@@ -110,7 +105,7 @@ export class UserController {
     static async delete(req, res, next) {
         try {
             const { id } = req.user;
-            const domainUser = User.initWithId(id);
+            const domainUser = await User.initWithId(id);
             await domainUser.delete();
 
             res
@@ -127,7 +122,7 @@ export class UserController {
         } catch (err) {
             log.web('delete', '/user', 400);
             log.error(err);
-            next({ error: error.message });
+            next({ error: err.message });
         }
     }
 }

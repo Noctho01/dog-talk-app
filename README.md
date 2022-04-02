@@ -18,8 +18,8 @@ Aplicar areas distintas em desenvolvimento de softwares mas com uma finalidade e
 - Frontend, usarei apenas o basico para tornar a aplicação acessivel (Html, Css, Js)
 
 ## 👮🏾‍♂️ Services
-- [ ] Cadastro de Usuario
-- [ ] Login de Usuario
+- [x] Cadastro de Usuario
+- [x] Login de Usuario
 - [ ] Seleção de Salas
 - [ ] Gerador de Perfil Canino
 - [ ] Servidor WebSocket

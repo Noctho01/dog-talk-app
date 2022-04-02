@@ -9,7 +9,7 @@ const roomSchema = new Schema({
     limit: Number,
     inRoom: [canineProfileIdSchema]
 }, {
-    autoCreate: false,
+    autoCreate: true,
     timestamps: true,
     bufferCommands: false,
 });

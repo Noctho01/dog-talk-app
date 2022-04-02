@@ -31,8 +31,8 @@ export class RoomRepository {
         return await this._roomModel.deleteOne({ _id: roomid });
     }
 
-    async findAll() {
-        return await this._roomModel.find();
+    async findAll(projection) {
+        return await this._roomModel.find().exec();
     }
 
     async update(condition, updated){

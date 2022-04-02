@@ -9,7 +9,6 @@ import { Log as log} from '../../jobs/log.js';
 const userRepository = new UserRepository(UserModel);
 User.initRepository(userRepository);
 
-
 export class UserController {
 
     static async create(req, res, next) {
@@ -25,40 +24,36 @@ export class UserController {
             log.debug('/UserController.js', 39, 'usuario criado');
 
             res
-            .set('Content-Type', 'application/json')
-            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11');
-            
-            log.web('post', '/user', 201);
-            
-            return res
             .status(201)
-            .json({ message: 'user created'});
+            .set('Content-Type', 'application/json; charset=utf-8')
+            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
+            .json({ message: 'user created' });
+            
+            return log.web('post', '/user', 201);
 
         } catch (err) {
             log.web('post', '/user', 500);
-            log.error(err);
-            next({ error: error.message });
+            next(err);
         }
     }
 
     static loginUser(req, res, next) {
         try {                   
             const { id, email } = req.user;
-            const token = jwt.sign({ id, email }, envConfig.SECRET_KEY, { expiresIn: '1m' });
+            const token = jwt.sign({ id, email }, envConfig.SECRET_KEY, { expiresIn: '5s' });
 
             res
             .status(201)
-            .set('Content-Type', 'application/json')
+            .set('Content-Type', 'application/json; charset=utf-8')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
-            .cookie('Authorization-Token', token, { httpOnly: true, maxAge: 60000})
+            .cookie('Authorization-Token', token)
             .json({ message: 'user token created' });
 
             return log.web('post', '/user/login', 201);
 
         } catch (err) {
             log.web('post', '/user/login', 400);
-            log.error(err);
-            next({ error: error.message });
+            next(err);
         }
     }
 
@@ -67,7 +62,7 @@ export class UserController {
             res
             .status(200)
             .clearCookie('Authorization-Token')
-            .set('Content-Type', 'application/json')
+            .set('Content-Type', 'application/json; charset=utf-8')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
             .json({ message: 'user token deleted' });
 
@@ -75,8 +70,7 @@ export class UserController {
 
         } catch (err) {
             log.web('delete', '/user/logout', 400);
-            log.error(err);
-            next({ error: error.message });
+            next(err);
         }
     }
 
@@ -86,7 +80,7 @@ export class UserController {
             const userDomain = await User.initWithId(id);
 
             res
-            .set('Content-Type', 'application/json')
+            .set('Content-Type', 'application/json; charset=utf-8')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
 
             log.web('get', '/account', 200);
@@ -97,8 +91,7 @@ export class UserController {
 
         } catch (err) {
             log.web('get', '/user/email', 400);
-            log.error(err);
-            next({ error: error.message });
+            next(err);
         }
     }
 
@@ -110,7 +103,7 @@ export class UserController {
 
             res
             .clearCookie('Authorization-Token')
-            .set('Content-Type', 'application/json')
+            .set('Content-Type', 'application/json; charset=utf-8')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
 
             log.web('delete', '/user', 200);
@@ -121,8 +114,7 @@ export class UserController {
 
         } catch (err) {
             log.web('delete', '/user', 400);
-            log.error(err);
-            next({ error: err.message });
+            next(err);
         }
     }
 }

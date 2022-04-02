@@ -11,7 +11,6 @@ export class RoomController {
     static async getRooms(req, res, next) {
         try {
             const rooms = await Room.findAll();
-
             res
             .status(200)
             .set('Content-Type', 'application/json')

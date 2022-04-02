@@ -38,11 +38,14 @@ const cookieExtractor = req => {
 const j_strategyOptions = {
     jwtFromRequest: cookieExtractor,
     secretOrKey: envConfig.SECRET_KEY,
+    ignoreExpiration: true,
     session: false 
 }
 
 // JwtStrategy Callback
 const j_strategyCb = (payload, done) => {
+    let timeNow = new Date().getTime()/1000;
+    if (timeNow > payload.exp) return done({ message: 'Token expirado' }, false);
     return done(null, payload);
 }
 

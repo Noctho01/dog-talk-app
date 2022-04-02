@@ -60,14 +60,21 @@ export class Room {
      */
     static async findAll() {
         const roomsDomain = [];
-        const rooms = await Room.#repository.findAll(_, '_id name limit inRoom');
+        const rooms = await Room.#repository.findAll('_id name limit inRoom');
+        if (!rooms || rooms.length === 0) throw new Error('Salas não encontradas');
         rooms.forEach(room => {
-            roomsDomain.push(new Room(
+            let newRoom = new Room(
                 room._id,
                 room.name,
                 room.limit,
                 room.inRoom,
-            ));
+            );
+
+            roomsDomain.push({
+                name: newRoom.name,
+                limit: newRoom.limit,
+                inRoom: newRoom.inRoom.length
+            });
         });
 
         return roomsDomain;

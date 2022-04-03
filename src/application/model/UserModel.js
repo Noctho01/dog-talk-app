@@ -5,8 +5,9 @@ const userSchema = new Schema({
     pwdHash: String,
     particularKeyHash: String
 }, {
-    autoCreate: false,
+    autoCreate: true,
     timestamps: true,
+    bufferCommands: false,
 });
 
 export const UserModel = model('Users', userSchema);

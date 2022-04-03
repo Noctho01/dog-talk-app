@@ -50,8 +50,7 @@ export class Room {
      * @returns {Boolean}
      */
     static repositoryExist() {
-        if(Room.#repository) return true;
-        return false;
+        return Room.#repository ?true:false;
     }
 
     /**

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1648851679754" clover="3.2.0">
-  <project timestamp="1648851679755" name="All files">
-    <metrics statements="148" coveredstatements="80" conditionals="89" coveredconditionals="45" methods="56" coveredmethods="46" elements="293" coveredelements="171" complexity="0" loc="148" ncloc="148" packages="4" files="7" classes="7"/>
+<coverage generated="1648961239293" clover="3.2.0">
+  <project timestamp="1648961239293" name="All files">
+    <metrics statements="148" coveredstatements="80" conditionals="98" coveredconditionals="45" methods="56" coveredmethods="46" elements="302" coveredelements="171" complexity="0" loc="148" ncloc="148" packages="4" files="7" classes="7"/>
     <package name="application.domain">
       <metrics statements="55" coveredstatements="45" conditionals="54" coveredconditionals="38" methods="21" coveredmethods="18"/>
       <file name="Room.js" path="/home/noctho/dev/dogtalk-project/src/application/domain/Room.js">
@@ -87,9 +87,9 @@
       </file>
     </package>
     <package name="jobs">
-      <metrics statements="56" coveredstatements="1" conditionals="27" coveredconditionals="0" methods="4" coveredmethods="0"/>
+      <metrics statements="56" coveredstatements="1" conditionals="36" coveredconditionals="0" methods="4" coveredmethods="0"/>
       <file name="log.js" path="/home/noctho/dev/dogtalk-project/src/jobs/log.js">
-        <metrics statements="56" coveredstatements="1" conditionals="27" coveredconditionals="0" methods="4" coveredmethods="0"/>
+        <metrics statements="56" coveredstatements="1" conditionals="36" coveredconditionals="0" methods="4" coveredmethods="0"/>
         <line num="2" count="2" type="stmt"/>
         <line num="10" count="0" type="stmt"/>
         <line num="23" count="0" type="stmt"/>

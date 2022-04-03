@@ -2,9 +2,10 @@ import { Schema, model } from "./database/db.js";
 
 const canineProfileSchema = new Schema({
     breed: String,
-    profilePictureUrl: String 
+    profilePictureUrl: String,
+    roomName: String
 }, {
-    autoCreate: false,
+    autoCreate: true,
     timestamps: true,
     bufferCommands: false,
 });

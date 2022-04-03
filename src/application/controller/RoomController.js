@@ -30,6 +30,10 @@ export class RoomController {
     static async selectRoom(req, res, next) {
         const { roomName } = req.params;
         try {
+            // 1 - criar perfil canino aleatorio aqui
+            // 2 - salvar no banco de dados
+            // 3 - adicionar id do perfil canino na sala
+
             res
             .set('Access-Control-Allow-Credentials', 'true')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')

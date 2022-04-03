@@ -46,8 +46,7 @@ export class User {
      * @returns {Boolean}
      */
     static repositoryExist() {
-        if(User.#repository) return true;
-        return false;
+        return User.#repository ?true:false;
     }
 
     /**

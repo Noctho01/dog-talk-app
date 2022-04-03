@@ -20,3 +20,4 @@ router
 // Rooms
 router
 .get('/rooms', passport.authenticate('jwt', { session: false }), RoomController.getRooms)
+.get('/room/:roomName', passport.authenticate('jwt', { session: false }), RoomController.selectRoom)

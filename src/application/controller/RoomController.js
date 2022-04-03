@@ -11,17 +11,35 @@ export class RoomController {
     static async getRooms(req, res, next) {
         try {
             const rooms = await Room.findAll();
+
             res
             .status(200)
+            .set('Access-Control-Allow-Credentials', 'true')
+            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
             .set('Content-Type', 'application/json')
-            .set('X-Powered-By', 'PHP Admin')
-            .json(rooms);
+            .json({ rooms: rooms});
 
             return log.web('get', '/register', 200);
             
         } catch (err) {
             log.web('get', '/rooms', 500);
-            log.error(err);
+            next(err.message);
+        }
+    }
+
+    static async selectRoom(req, res, next) {
+        const { roomName } = req.params;
+        try {
+            res
+            .set('Access-Control-Allow-Credentials', 'true')
+            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
+            .set('Content-Type', 'application/json')
+            .json({ message: 'room selected' });
+
+            return log.web('get', `/room/${roomName}`, 201);
+
+        } catch (err) {
+            log.web('get', `/room/${roomName}`, 500);
             next(err.message);
         }
     }

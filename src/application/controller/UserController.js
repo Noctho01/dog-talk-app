@@ -33,18 +33,19 @@ export class UserController {
 
         } catch (err) {
             log.web('post', '/user', 500);
-            next(err);
+            next(err.message);
         }
     }
 
     static loginUser(req, res, next) {
         try {                   
             const { id, email } = req.user;
-            const token = jwt.sign({ id, email }, envConfig.SECRET_KEY, { expiresIn: '5s' });
+            const token = jwt.sign({ id, email }, envConfig.SECRET_KEY, { expiresIn: '1h' });
 
             res
             .status(201)
             .set('Content-Type', 'application/json; charset=utf-8')
+            .set('Access-Control-Allow-Credentials', 'true')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
             .cookie('Authorization-Token', token)
             .json({ message: 'user token created' });
@@ -53,7 +54,7 @@ export class UserController {
 
         } catch (err) {
             log.web('post', '/user/login', 400);
-            next(err);
+            next(err.message);
         }
     }
 
@@ -70,7 +71,7 @@ export class UserController {
 
         } catch (err) {
             log.web('delete', '/user/logout', 400);
-            next(err);
+            next(err.message);
         }
     }
 
@@ -80,18 +81,18 @@ export class UserController {
             const userDomain = await User.initWithId(id);
 
             res
+            .status(200)
+            .set('Access-Control-Allow-Credentials', 'true')
             .set('Content-Type', 'application/json; charset=utf-8')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
-
-            log.web('get', '/account', 200);
-
-            return res
-            .status(200)
             .json({ email: userDomain.email });
+
+            return log.web('get', '/account', 200);
+            
 
         } catch (err) {
             log.web('get', '/user/email', 400);
-            next(err);
+            next(err.message);
         }
     }
 
@@ -114,7 +115,7 @@ export class UserController {
 
         } catch (err) {
             log.web('delete', '/user', 400);
-            next(err);
+            next(err.message);
         }
     }
 }

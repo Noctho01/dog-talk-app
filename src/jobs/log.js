@@ -6,11 +6,11 @@ export class Log {
     /**
      * @param {Error} objectError 
      */
-    static error(objectError) {
+    static error(objectError, isStack = true, isCode = true, isMessage = true) {
         log(`
         ${chalk.bold.red('ERROR!!')}
-        ${chalk.bold.red('CODE:')} ${chalk.bold.white(objectError.code)} ${chalk.bold.red('MESSAGE:')} ${chalk.bold.white(objectError.message)}        
-        ${chalk.bold.red('STACK:')} ${chalk.bold.white(objectError.stack)}
+        ${chalk.bold.red('CODE:')} ${chalk.bold.white(isCode?objectError.code:null)} ${chalk.bold.red('MESSAGE:')} ${chalk.bold.white(isMessage?objectError.message:null)}
+        ${chalk.bold.red('STACK:')} ${chalk.bold.white(isStack?objectError.stack:null)}
         `);
     }
 

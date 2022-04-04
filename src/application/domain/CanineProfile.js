@@ -1,4 +1,4 @@
-class CanineProfile {
+export class CanineProfile {
 
     static #repository;
 
@@ -72,7 +72,7 @@ class CanineProfile {
         
         const
         urltoBreedList = 'https://dog.ceo/api/breeds/list/all',
-        timeout = 6000,
+        timeout = 10000,
         method = 'GET',
         breeds = [],
         provisionalCanineProfile = {};
@@ -80,19 +80,18 @@ class CanineProfile {
         try {
             // Pegando Nome da raça e atribuindo valor aleatorio
             const breedListResponse = await CanineProfile.#axios({ url: urltoBreedList, method, timeout });
-            if (!breedListResponse.data || breedListResponse.data.status !== "success") throw new Error("requisição Dog Ceo falhou");
+            if (!breedListResponse.data || breedListResponse.data.status !== "success") throw new Error("primeira requisição Dog Ceo falhou");
             
             Object.keys(breedListResponse.data.message).forEach(breed => breeds.push(breed));
-            
-            while (!provisionalCanineProfile.breed || inRoom.includes(provisionalCanineProfile.breed)) {
-                provisionalCanineProfile.breed = breeds[parseInt(Math.random()) * ((breeds.length - 1) - 0) + 0];
-            }
+
+            do { provisionalCanineProfile.breed = breeds[parseInt(Math.random() * ((breeds.length - 1) - 0) + 0)] }
+            while (inRoom.includes(provisionalCanineProfile.breed));
 
             // Pegando a url da imagem da raça especificada em #breed
             const
             urltoBreedImg = `https://dog.ceo/api/breed/${provisionalCanineProfile.breed}/images/random`,
             breedImgResponse = await CanineProfile.#axios({ url: urltoBreedImg, method, timeout});        
-            if (!breedImgResponse.data || breedImgResponse.data.status !== "success") throw new Error("requisição Dog Ceo falhou");
+            if (!breedImgResponse.data || breedImgResponse.data.status !== "success") throw new Error("segunda requisição Dog Ceo falhou");
     
             provisionalCanineProfile.profilePictureUrl = breedImgResponse.data.message;
 
@@ -146,17 +145,22 @@ class CanineProfile {
         if (!this.#roomName) throw new Error('roomName não foi definido');
         if (!this.#profilePictureUrl) throw new Error('profilePictureUrl não foi definido');
 
-        const canineProfileExist = await CanineProfile.#repository.findOne({ breed: this.#breed, roomName: this.#roomName }, '_id');
-        if (canineProfileExist) throw new Error('Este Perfil Canino já está em uso nesta sala');
+        const canineProfile = await CanineProfile.#repository.findOne({ breed: this.#breed, roomName: this.#roomName }, '_id');
         
-        await CanineProfile.#repository.create({
-            breed: this.#breed,
-            roomName: this.#roomName,
-            profilePictureUrl: this.#profilePictureUrl
-        });
+        if (canineProfile) {
+            const updateResult = await CanineProfile.#repository.update({_id: this.#id}, { breed: this.#breed, roomName: this.#roomName, profilePictureUrl: this.#profilePictureUrl });
+            if (!updateResult) throw new Error('As alterações deste perfil canino não foram salvas');
 
-        const canineProfileId = await CanineProfile.#repository.findOne({ breed: this.#breed, roomName: this.#roomName }, '_id');
-        if (canineProfileId) this.#id = canineProfileId._id;
+        } else {
+            await CanineProfile.#repository.create({
+                breed: this.#breed,
+                roomName: this.#roomName,
+                profilePictureUrl: this.#profilePictureUrl
+            });
+    
+            const canineProfileId = await CanineProfile.#repository.findOne({ breed: this.#breed, roomName: this.#roomName }, '_id');
+            if (canineProfileId) this.#id = canineProfileId._id;
+        }
     }
 
 

@@ -81,14 +81,14 @@ export class Room {
 
     /**
      * @description aduciona os dados do documento refente ao id na instancia de Room
-     * @param {String} roomid 
+     * @param {String} roomName 
      * @static
      * @public
      * @returns {Room}
      */
-     static async initWithId(roomid) {
-        if (!roomid || roomid === undefined || roomid === null) throw new Error('id da sala não foi informado');
-        const room = await Room.#repository.findById(roomid, '_id name limit inRoom');
+     static async initWithName(roomName) {
+        if (!roomName || roomName === undefined || roomName === null) throw new Error('o nome da sala não foi informado');
+        const room = await Room.#repository.findOne({name: roomName}, '_id name limit inRoom');
         if (!room) throw new Error('Esta sala não existe');
         
         return new Room(
@@ -101,10 +101,10 @@ export class Room {
 
     /**
      * @description Adiciona mais um id de uma entidade CanineProfile ao array inRoom de Room
-     * @param {ObjectId} newCanineProfileId 
+     * @param {String} newCanineProfileBreed
      */
-    addInRoom(newCanineProfileId) {
-        this.#inRoom.push({ canineProfileId: newCanineProfileId });
+    addInRoom(newCanineProfileBreed) {
+        this.#inRoom.push(newCanineProfileBreed);
     }
 
     /**

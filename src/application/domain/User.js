@@ -78,14 +78,19 @@ export class User {
         if (!this.#email) throw new Error('email não foi definido');
         if (!this.#pwdHash) throw new Error('pwdHash não foi definido');
 
-        const userByEmail = await User.#repository.findOne({ email: this.#email }, 'email');
-        if (userByEmail) throw new Error('Este email já está em uso');
+        const user = await User.#repository.findOne({ email: this.#email }, 'email');
         
-        await User.#repository.create({
-            _id: this.#id,
-            email: this.#email,
-            pwdHash: this.#pwdHash
-        });
+        if (user) {
+            const updateResult = await User.#repository.update({_id: this.#id}, { email: this.#email, pwdHash: this.#pwdHash });
+            if (!updateResult) throw new Error('As alterações deste usuario não foram salvas');
+
+        } else {
+            await User.#repository.create({
+                _id: this.#id,
+                email: this.#email,
+                pwdHash: this.#pwdHash
+            });
+        }
     }
 
 

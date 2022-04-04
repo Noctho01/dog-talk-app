@@ -23,7 +23,7 @@ export class RoomRepository {
      * @param {String} projection 
      * @returns  {Promise<UserModel>}
      */
-    async  findById(roomid, projection) {
+    async findById(roomid, projection) {
         return await this._roomModel.findById(roomid, projection)
     }
 

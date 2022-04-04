@@ -1,10 +1,21 @@
+import axios from 'axios';
 import { Log as log } from "../../jobs/log.js";
+
 import { RoomModel } from '../model/RoomModel.js';
 import { RoomRepository } from '../repository/RoomRepository.js';
 import { Room } from "../domain/Room.js";
 
-const roomRepository = new RoomRepository(RoomModel);
+import { CanineProfileModel } from "../model/CanineProfileModel.js";
+import { CanineProfile } from "../domain/CanineProfile.js";
+import { CanineProfileRepository } from "../repository/CanineProfileRepository.js";
+
+const
+roomRepository = new RoomRepository(RoomModel),
+canineProfileRepository = new CanineProfileRepository(CanineProfileModel);
+
 Room.initRepository(roomRepository);
+CanineProfile.initRepository(canineProfileRepository);
+CanineProfile.initAxios(axios);
 
 export class RoomController {
 
@@ -30,9 +41,19 @@ export class RoomController {
     static async selectRoom(req, res, next) {
         const { roomName } = req.params;
         try {
+            console.log(roomName)
+            
+            const room = await Room.initWithName(roomName);
+            
             // 1 - criar perfil canino aleatorio aqui
+            const canineProfile = await CanineProfile.init(roomName, room.inRoom);
+
             // 2 - salvar no banco de dados
-            // 3 - adicionar id do perfil canino na sala
+            await canineProfile.save();
+
+            // 3 - adicionar o breed do perfil canino na sala
+            room.addInRoom(canineProfile.breed);
+            room.save();
 
             res
             .set('Access-Control-Allow-Credentials', 'true')
@@ -44,7 +65,7 @@ export class RoomController {
 
         } catch (err) {
             log.web('get', `/room/${roomName}`, 500);
-            next(err.message);
+            next(err);
         }
     }
 }

@@ -27,4 +27,20 @@ export class UserModelTest {
         this.userDb.splice(this.userDb.indexOf(user), 1);
         return { deletedCount: 1 };
     }
+
+    async updateOne(condition, updated){
+        let result = false;
+        this.userDb.forEach(user => {
+            Object.keys(condition).forEach(prop => {
+                if (user[prop] === condition[prop]) {
+                    result = true;
+                    Object.keys(updated).forEach(propUd => {
+                        user[propUd] = updated[propUd];
+                    });
+                }
+            });
+        });
+
+        return result;
+    }
 }

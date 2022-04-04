@@ -15,4 +15,8 @@ export class CanineProfileRepository {
     async deleteById(canineProfileId) {
         return await this._canineProfileModel.deleteOne({ _id: canineProfileId });
     }
+
+    async update(condition, updated){
+        return await this._canineProfileModel.updateOne(condition, updated);
+    }
 }

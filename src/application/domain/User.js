@@ -11,22 +11,32 @@ export class User {
     /**@type {String} */
     #pwdHash;
 
+    /**@type {String<ObjectID>} */
+    #canineProfileId;
+
     /**
      * @description Constructor Method
      * @param {String<ObjectID>} id 
      * @param {String} email 
      * @param {String} pwdHash 
      */
-    constructor(id, email, pwdHash) {
+    constructor(id, email, pwdHash, canineProfileId) {
         this.#id = id;
         this.#email = email;
         this.#pwdHash = pwdHash;
+        this.#canineProfileId = canineProfileId ? canineProfileId : null;
     }
 
     // Getter Methods
     get id() { return this.#id }
     get email() { return this.#email }
     get pwdHash() { return this.#pwdHash }
+    get canineProfileId() { return this.#canineProfileId }
+
+    /** @param {String<ObjectID>} id */
+    set canineProfileId(id) {
+        this.#canineProfileId = id
+    }
 
 
     /**
@@ -58,13 +68,14 @@ export class User {
      */
      static async initWithId(userid) {
         if (!userid || userid === undefined || userid === null) throw new Error('o id do usuario não foi informado');
-        const user = await User.#repository.findById(userid, '_id email pwdHash');
+        const user = await User.#repository.findById(userid, '_id email pwdHash canineProfileId');
         if (!user) throw new Error('Este usuario não existe');
         
         return new User(
             user._id,
             user.email,
-            user.pwdHash
+            user.pwdHash,
+            user.canineProfileId
         );
     }
 
@@ -81,7 +92,12 @@ export class User {
         const user = await User.#repository.findOne({ email: this.#email }, 'email');
         
         if (user) {
-            const updateResult = await User.#repository.update({_id: this.#id}, { email: this.#email, pwdHash: this.#pwdHash });
+            const updateResult = await User.#repository.update({_id: this.#id}, {
+                email: this.#email,
+                pwdHash: this.#pwdHash,
+                canineProfileId: this.#canineProfileId
+            });
+            
             if (!updateResult) throw new Error('As alterações deste usuario não foram salvas');
 
         } else {

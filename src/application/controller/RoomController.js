@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { Log as log } from "../../jobs/log.js";
 
+import { UserModel } from "../model/UserModel.js";
+import { UserRepository } from "../repository/UserRepository.js";
+import { User } from "../domain/User.js";
+
 import { RoomModel } from '../model/RoomModel.js';
 import { RoomRepository } from '../repository/RoomRepository.js';
 import { Room } from "../domain/Room.js";
@@ -10,9 +14,11 @@ import { CanineProfile } from "../domain/CanineProfile.js";
 import { CanineProfileRepository } from "../repository/CanineProfileRepository.js";
 
 const
+userRepository = new UserRepository(UserModel),
 roomRepository = new RoomRepository(RoomModel),
 canineProfileRepository = new CanineProfileRepository(CanineProfileModel);
 
+User.initRepository(userRepository);
 Room.initRepository(roomRepository);
 CanineProfile.initRepository(canineProfileRepository);
 CanineProfile.initAxios(axios);
@@ -30,7 +36,7 @@ export class RoomController {
             .set('Content-Type', 'application/json')
             .json({ rooms: rooms});
 
-            return log.web('get', '/register', 200);
+            return log.web('get', '/rooms', 200);
             
         } catch (err) {
             log.web('get', '/rooms', 500);
@@ -39,14 +45,15 @@ export class RoomController {
     }
 
     static async selectRoom(req, res, next) {
-        const { roomName } = req.params;
+        const
+        { id: userid } = req.user,
+        { roomName } = req.params;
+
         try {
-            console.log(roomName)
-            
-            const room = await Room.initWithName(roomName);
-            
-            // 1 - criar perfil canino aleatorio aqui
-            const canineProfile = await CanineProfile.init(roomName, room.inRoom);
+            const
+            room = await Room.initWithName(roomName),
+            user = await User.initWithId(userid),
+            canineProfile = await CanineProfile.init(roomName, room.inRoom);
 
             // 2 - salvar no banco de dados
             await canineProfile.save();
@@ -54,6 +61,10 @@ export class RoomController {
             // 3 - adicionar o breed do perfil canino na sala
             room.addInRoom(canineProfile.breed);
             room.save();
+
+            // 4 - associa o canineProfile com o user
+            user.canineProfileId = canineProfile.id;
+            user.save();
 
             res
             .set('Access-Control-Allow-Credentials', 'true')

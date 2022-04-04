@@ -152,14 +152,14 @@ export class CanineProfile {
             if (!updateResult) throw new Error('As alterações deste perfil canino não foram salvas');
 
         } else {
-            await CanineProfile.#repository.create({
+            const resultCreateCanineProfile = await CanineProfile.#repository.create({
                 breed: this.#breed,
                 roomName: this.#roomName,
                 profilePictureUrl: this.#profilePictureUrl
             });
-    
-            const canineProfileId = await CanineProfile.#repository.findOne({ breed: this.#breed, roomName: this.#roomName }, '_id');
-            if (canineProfileId) this.#id = canineProfileId._id;
+
+            if (!resultCreateCanineProfile) throw new Error('O perfil canino não foi criado');
+            this.#id = resultCreateCanineProfile._id;
         }
     }
 

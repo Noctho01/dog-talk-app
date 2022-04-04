@@ -5,7 +5,9 @@ export class CanineProfileRepository {
     }
 
     async create(canineProfileData) {
-        this._canineProfileModel.create(canineProfileData);
+        const canineProfile = new this._canineProfileModel(canineProfileData);
+        await canineProfile.save();
+        return canineProfile;
     }
 
     async findOne(props, projection) {

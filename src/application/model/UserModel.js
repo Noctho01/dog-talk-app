@@ -1,9 +1,10 @@
-import { Schema, model } from "./database/db.js";
+import { Schema, model, Types } from "./database/db.js";
 
 const userSchema = new Schema({
     email: String,
     pwdHash: String,
-    particularKeyHash: String
+    particularKeyHash: String,
+    canineProfileId: Types.ObjectId
 }, {
     autoCreate: true,
     timestamps: true,

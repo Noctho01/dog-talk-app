@@ -12,15 +12,10 @@ User.initRepository(userRepository);
 export class UserController {
 
     static async create(req, res, next) {
+        const { email, password: pwdHash } = req.body;
         try {
-            const { email, password: pwdHash} = req.body;
-            const userDomain = new User(
-                new Types.ObjectId(),
-                email,
-                pwdHash
-            );
-            
-            await userDomain.save();
+            const user = new User(new Types.ObjectId(), email, pwdHash);
+            await user.save();
             log.debug('/UserController.js', 39, 'usuario criado');
 
             res
@@ -38,8 +33,8 @@ export class UserController {
     }
 
     static loginUser(req, res, next) {
+        const { id, email } = req.user;
         try {                   
-            const { id, email } = req.user;
             const token = jwt.sign({ id, email }, envConfig.SECRET_KEY, { expiresIn: '1h' });
 
             res
@@ -76,16 +71,16 @@ export class UserController {
     }
 
     static async getUserEmail(req, res, next) {
+        const { id } = req.user;
         try {
-            const { id } = req.user;
-            const userDomain = await User.initWithId(id);
+            const user = await User.initWithId(id);
 
             res
             .status(200)
             .set('Access-Control-Allow-Credentials', 'true')
             .set('Content-Type', 'application/json; charset=utf-8')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
-            .json({ email: userDomain.email });
+            .json({ email: user.email });
 
             return log.web('get', '/account', 200);
             
@@ -97,10 +92,10 @@ export class UserController {
     }
 
     static async delete(req, res, next) {
+        const { id } = req.user;
         try {
-            const { id } = req.user;
-            const domainUser = await User.initWithId(id);
-            await domainUser.delete();
+            const user = await User.initWithId(id);
+            await user.delete();
 
             res
             .clearCookie('Authorization-Token')

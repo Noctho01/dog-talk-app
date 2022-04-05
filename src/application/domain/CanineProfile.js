@@ -73,9 +73,11 @@ export class CanineProfile {
         const
         urltoBreedList = 'https://dog.ceo/api/breeds/list/all',
         timeout = 10000,
-        method = 'GET',
-        breeds = [],
-        provisionalCanineProfile = {};
+        method = 'GET';
+
+        const
+        provisionalCanineProfile = {},
+        breeds = [];
 
         try {
             // Pegando Nome da raça e atribuindo valor aleatorio
@@ -84,8 +86,14 @@ export class CanineProfile {
             
             Object.keys(breedListResponse.data.message).forEach(breed => breeds.push(breed));
 
-            do { provisionalCanineProfile.breed = breeds[parseInt(Math.random() * ((breeds.length - 1) - 0) + 0)] }
-            while (inRoom.includes(provisionalCanineProfile.breed));
+            if (inRoom.length > 0) {
+                let breedsInUse = await CanineProfile.#repository.findAll({ _id: { $or: inRoom }}, { canineProfile: { breed: 1 }});
+                do { provisionalCanineProfile.breed = breeds[parseInt(Math.random() * ((breeds.length - 1) - 0) + 0)] }
+                while (breedsInUse.includes(provisionalCanineProfile.breed));
+
+            } else {
+                provisionalCanineProfile.breed = breeds[parseInt(Math.random() * ((breeds.length - 1) - 0) + 0)]
+            }
 
             // Pegando a url da imagem da raça especificada em #breed
             const
@@ -107,31 +115,30 @@ export class CanineProfile {
      * @param {String} roomName 
      * @param {Array<String>} inRoom 
      */
-    static async init(roomName, inRoom) {
+    static async init(id, roomName, inRoom) {
         const
         provisionalCanineProfile = await CanineProfile.#profileGenerator(inRoom),
         canineProfile = new CanineProfile();
 
+        canineProfile.#id = id;
         canineProfile.#breed = provisionalCanineProfile.breed;
         canineProfile.#profilePictureUrl = provisionalCanineProfile.profilePictureUrl;
         canineProfile.#roomName = roomName;
-
         return canineProfile;
     }
 
 
-    static async initWithProps(props) {
-        if (!props || props.breed === undefined || props.roomName === undefined || props.breed === undefined || props.roomName === undefined) throw new Error('as propriedades do Perfil Canino não foiram definidas');
-        const result = await CanineProfile.#repository.findOne(props, '_id breed roomName profilePictureUrl');
+    static async initWithId(id) {
+        if (!id) throw new Error('id não foidefinido');
+        const result = await CanineProfile.#repository.findById(id, '_id canineProfile');
         if (!result) throw new Error('Este Perfil Canino não existe');
         
         const canineProfile = new CanineProfile();
 
         canineProfile.#id = result._id;
-        canineProfile.#breed = result.breed;
-        canineProfile.#roomName = result.roomName;
-        canineProfile.#profilePictureUrl = result.profilePictureUrl;
-
+        canineProfile.#breed = result.canineProfile.breed;
+        canineProfile.#roomName = result.canineProfile.roomName;
+        canineProfile.#profilePictureUrl = result.canineProfile.profilePictureUrl;
         return canineProfile;
     }
 
@@ -145,22 +152,15 @@ export class CanineProfile {
         if (!this.#roomName) throw new Error('roomName não foi definido');
         if (!this.#profilePictureUrl) throw new Error('profilePictureUrl não foi definido');
 
-        const canineProfile = await CanineProfile.#repository.findOne({ breed: this.#breed, roomName: this.#roomName }, '_id');
+        const canineProfile = await CanineProfile.#repository.findById(this.#id);
+        if (!canineProfile) throw new Error('Perfil Canino não encontrado'); 
         
-        if (canineProfile) {
-            const updateResult = await CanineProfile.#repository.update({_id: this.#id}, { breed: this.#breed, roomName: this.#roomName, profilePictureUrl: this.#profilePictureUrl });
-            if (!updateResult) throw new Error('As alterações deste perfil canino não foram salvas');
-
-        } else {
-            const resultCreateCanineProfile = await CanineProfile.#repository.create({
-                breed: this.#breed,
-                roomName: this.#roomName,
-                profilePictureUrl: this.#profilePictureUrl
-            });
-
-            if (!resultCreateCanineProfile) throw new Error('O perfil canino não foi criado');
-            this.#id = resultCreateCanineProfile._id;
-        }
+        const updateResult = await CanineProfile.#repository.updateById(this.#id, {
+            breed: this.#breed,
+            roomName: this.#roomName,
+            profilePictureUrl: this.#profilePictureUrl
+        });
+        if (!updateResult.acknowledged) throw new Error('As alterações deste perfil canino não foram salvas');
     }
 
 
@@ -170,6 +170,6 @@ export class CanineProfile {
         if (!this.#roomName) throw new Error('roomName não foi definido');
 
         const resultDelete = await CanineProfile.#repository.deleteById(this.#id);
-        if (resultDelete.deletedCount === 0) throw new Error('processo de deletar o perfil canino falhou');
+        if (!resultDelete.acknowledged) throw new Error('processo de deletar o perfil canino falhou');
     }
 }

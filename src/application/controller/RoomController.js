@@ -9,14 +9,13 @@ import { RoomModel } from '../model/RoomModel.js';
 import { RoomRepository } from '../repository/RoomRepository.js';
 import { Room } from "../domain/Room.js";
 
-import { CanineProfileModel } from "../model/CanineProfileModel.js";
 import { CanineProfile } from "../domain/CanineProfile.js";
 import { CanineProfileRepository } from "../repository/CanineProfileRepository.js";
 
 const
 userRepository = new UserRepository(UserModel),
 roomRepository = new RoomRepository(RoomModel),
-canineProfileRepository = new CanineProfileRepository(CanineProfileModel);
+canineProfileRepository = new CanineProfileRepository(UserModel);
 
 User.initRepository(userRepository);
 Room.initRepository(roomRepository);
@@ -52,19 +51,14 @@ export class RoomController {
         try {
             const
             room = await Room.initWithName(roomName),
-            user = await User.initWithId(userid),
-            canineProfile = await CanineProfile.init(roomName, room.inRoom);
+            canineProfile = await CanineProfile.init(userid, roomName, room.inRoom);
 
             // 2 - salvar no banco de dados
             await canineProfile.save();
 
             // 3 - adicionar o breed do perfil canino na sala
-            room.addInRoom(canineProfile.breed);
+            room.addInRoom(canineProfile.id);
             room.save();
-
-            // 4 - associa o canineProfile com o user
-            user.canineProfileId = canineProfile.id;
-            user.save();
 
             res
             .set('Access-Control-Allow-Credentials', 'true')
@@ -78,5 +72,29 @@ export class RoomController {
             log.web('get', `/room/${roomName}`, 500);
             next(err);
         }
+    }
+
+    static async getCanineProfile(req, res, next) {
+        const { id: userid } = req.user;
+        try {
+            const canineProfile = await CanineProfile.initWithId(userid);
+
+            res
+            .set('Access-Control-Allow-Credentials', 'true')
+            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
+            .set('Content-Type', 'application/json')
+            .json({ canineProfile: {
+                breed: canineProfile.breed,
+                roomName: canineProfile.roomName,
+                profilePictureUrl: canineProfile.profilePictureUrl
+            }});
+
+            return log.web('get', '/room/canineProfile', 200);
+            
+        } catch (err) {
+            log.web('get', '/room/canineProfile', 500);
+            next(err);
+        }
+        
     }
 }

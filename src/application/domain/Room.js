@@ -122,6 +122,6 @@ export class Room {
         
         const updateResult = await Room.#repository.update({_id: this.#id}, { inRoom: this.#inRoom });
 
-        if (!updateResult) throw new Error('As alterações desta sala não foram salvas');
+        if (!updateResult.acknowledged) throw new Error('As alterações desta sala não foram salvas');
     }
 }

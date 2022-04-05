@@ -1,24 +1,24 @@
 export class CanineProfileRepository {
 
-    constructor(CanineProfileModel) {
-        this._canineProfileModel = CanineProfileModel;
+    constructor(UserModel) {
+        this._userModel = UserModel;
     }
 
-    async create(canineProfileData) {
-        const canineProfile = new this._canineProfileModel(canineProfileData);
-        await canineProfile.save();
-        return canineProfile;
+    async findAll(condition, projection) {
+        return await this._userModel.find(condition, projection);
     }
 
-    async findOne(props, projection) {
-        return await this._canineProfileModel.findOne(props, projection);
+    async findById(id) {
+        return await this._userModel.findById(id, 'canineProfile');
     }
 
-    async deleteById(canineProfileId) {
-        return await this._canineProfileModel.deleteOne({ _id: canineProfileId });
+    async updateById(id, updated){
+        return await this._userModel.updateOne({ _id: id }, {
+            canineProfile: updated
+        });
     }
 
-    async update(condition, updated){
-        return await this._canineProfileModel.updateOne(condition, updated);
+    async deleteById(id){
+        return await this._userModel.updateOne({ _id: id }, { canineProfile: null });
     }
 }

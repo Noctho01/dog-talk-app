@@ -4,11 +4,16 @@ const userSchema = new Schema({
     email: String,
     pwdHash: String,
     particularKeyHash: String,
-    canineProfileId: Types.ObjectId
+    canineProfile: {
+        breed: String,
+        profilePictureUrl: String,
+        roomName: String
+    }
 }, {
     autoCreate: true,
     timestamps: true,
     bufferCommands: false,
+    versionKey: '_somethingElse'
 });
 
 export const UserModel = model('Users', userSchema);

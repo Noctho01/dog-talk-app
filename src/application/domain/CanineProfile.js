@@ -77,7 +77,10 @@ export class CanineProfile {
 
         const
         provisionalCanineProfile = {},
-        breeds = [];
+        breeds = [],
+        idInRoom = inRoom.map(user => {
+            return user._id
+        });
 
         try {
             // Pegando Nome da raça e atribuindo valor aleatorio
@@ -86,8 +89,8 @@ export class CanineProfile {
             
             Object.keys(breedListResponse.data.message).forEach(breed => breeds.push(breed));
 
-            if (inRoom.length > 0) {
-                let breedsInUse = await CanineProfile.#repository.findAll({ _id: { $or: inRoom }}, { canineProfile: { breed: 1 }});
+            if (idInRoom.length > 0) {
+                let breedsInUse = await CanineProfile.#repository.findAll({ _id: { $in: idInRoom }}, { canineProfile: { breed: 1 }});
                 do { provisionalCanineProfile.breed = breeds[parseInt(Math.random() * ((breeds.length - 1) - 0) + 0)] }
                 while (breedsInUse.includes(provisionalCanineProfile.breed));
 

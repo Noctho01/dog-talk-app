@@ -1,14 +1,12 @@
-import { Room } from "./application/Room.js";
+import { RoomServer } from "./application/RoomServer.js";
 import { parse } from "url";
 
-export default (WebSocketServer, server) => {
+export default server => {
     const
-    roomsListNames = ['quiantal', 'sala', 'cozinha', 'esquina'],
-    wssRooms = roomsListNames.map(roomName => new Room(WebSocketServer, roomName));
-
-    wssRooms.forEach(wss => {
-        wss.onConnection();
-    });
+    roomsListNames = ['quintal', 'sala', 'cozinha', 'esquina'],
+    wssRooms = roomsListNames.map(roomName => new RoomServer(roomName));
+    
+    wssRooms.forEach(wss => wss.onConnection());
 
     server.on('upgrade', (req, socket, head) => {
         const { pathname } = parse(req.url);

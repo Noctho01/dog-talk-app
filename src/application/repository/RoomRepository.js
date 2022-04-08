@@ -17,7 +17,6 @@ export class RoomRepository {
         return await this._roomModel.findOne(props, projection);
     }
 
-
     /**
      * @param {String} roomid 
      * @param {String} projection 

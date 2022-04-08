@@ -35,7 +35,7 @@ export class UserController {
     static loginUser(req, res, next) {
         const { id, email } = req.user;
         try {                   
-            const token = jwt.sign({ id, email }, envConfig.SECRET_KEY, { expiresIn: '1h' });
+            const token = jwt.sign({ id, email }, envConfig.SECRET_KEY, { expiresIn: '5h' });
 
             res
             .status(201)

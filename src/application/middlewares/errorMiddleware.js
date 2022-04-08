@@ -6,7 +6,7 @@ export default (err, req, res, next) => {
             res.clearCookie('Authorization-Token');
         }
 
-        log.error(err, false);
+        log.error(err);
 
         return res
         .status(400)

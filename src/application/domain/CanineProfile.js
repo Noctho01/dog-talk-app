@@ -1,6 +1,6 @@
 export class CanineProfile {
 
-    static #repository;
+    static repository;
 
     static #axios;
     
@@ -31,7 +31,7 @@ export class CanineProfile {
      * @public
      */
      static initRepository(repository) {
-        CanineProfile.#repository = repository;
+        CanineProfile.repository = repository;
     }
 
     /**
@@ -41,7 +41,7 @@ export class CanineProfile {
      * @returns {Boolean}
      */
      static repositoryExist() {
-        return CanineProfile.#repository ?true:false;
+        return CanineProfile.repository ?true:false;
     }
 
 
@@ -72,7 +72,7 @@ export class CanineProfile {
         
         const
         urltoBreedList = 'https://dog.ceo/api/breeds/list/all',
-        timeout = 10000,
+        timeout = 2000,
         method = 'GET';
 
         const
@@ -90,7 +90,7 @@ export class CanineProfile {
             Object.keys(breedListResponse.data.message).forEach(breed => breeds.push(breed));
 
             if (idInRoom.length > 0) {
-                let breedsInUse = await CanineProfile.#repository.findAll({ _id: { $in: idInRoom }}, { canineProfile: { breed: 1 }});
+                let breedsInUse = await CanineProfile.repository.findAll({ _id: { $in: idInRoom }}, { canineProfile: { breed: 1 }});
                 do { provisionalCanineProfile.breed = breeds[parseInt(Math.random() * ((breeds.length - 1) - 0) + 0)] }
                 while (breedsInUse.includes(provisionalCanineProfile.breed));
 
@@ -133,7 +133,7 @@ export class CanineProfile {
 
     static async initWithId(id) {
         if (!id) throw new Error('id não foidefinido');
-        const result = await CanineProfile.#repository.findById(id, '_id canineProfile');
+        const result = await CanineProfile.repository.findById(id, '_id canineProfile');
         if (!result) throw new Error('Este Perfil Canino não existe');
         
         const canineProfile = new CanineProfile();
@@ -155,10 +155,10 @@ export class CanineProfile {
         if (!this.#roomName) throw new Error('roomName não foi definido');
         if (!this.#profilePictureUrl) throw new Error('profilePictureUrl não foi definido');
 
-        const canineProfile = await CanineProfile.#repository.findById(this.#id);
+        const canineProfile = await CanineProfile.repository.findById(this.#id);
         if (!canineProfile) throw new Error('Perfil Canino não encontrado'); 
         
-        const updateResult = await CanineProfile.#repository.updateById(this.#id, {
+        const updateResult = await CanineProfile.repository.updateById(this.#id, {
             breed: this.#breed,
             roomName: this.#roomName,
             profilePictureUrl: this.#profilePictureUrl
@@ -172,7 +172,7 @@ export class CanineProfile {
         if (!this.#breed) throw new Error('breed não foi definido');
         if (!this.#roomName) throw new Error('roomName não foi definido');
 
-        const resultDelete = await CanineProfile.#repository.deleteById(this.#id);
+        const resultDelete = await CanineProfile.repository.deleteById(this.#id);
         if (!resultDelete.acknowledged) throw new Error('processo de deletar o perfil canino falhou');
     }
 }

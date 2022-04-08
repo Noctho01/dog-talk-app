@@ -107,6 +107,10 @@ export class Room {
         this.#inRoom.push(newCanineProfileBreed);
     }
 
+    removeInRoom(canineProfileId) {
+        this.#inRoom.splice(this.#inRoom.indexOf(canineProfileId), 1)
+    }
+
     /**
      * @description Metodo insere objeto<documento> ao banco de dados
      * @public

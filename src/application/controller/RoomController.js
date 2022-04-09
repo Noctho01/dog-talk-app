@@ -59,7 +59,7 @@ export class RoomController {
             // 3 - adicionar o breed do perfil canino na sala
             room.addInRoom(canineProfile.id);
             room.save();
-
+            
             res
             .set('Access-Control-Allow-Credentials', 'true')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')

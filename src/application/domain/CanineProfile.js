@@ -69,10 +69,9 @@ export class CanineProfile {
      * @param {Array<String>} inRoom
      */
     static async #profileGenerator(inRoom) {
-        
         const
         urltoBreedList = 'https://dog.ceo/api/breeds/list/all',
-        timeout = 2000,
+        timeout = 0,
         method = 'GET';
 
         const

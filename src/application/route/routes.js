@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { UserController } from '../controller/UserController.js';
 import { RoomController } from '../controller/RoomController.js';
 import { passport } from '../middlewares/authentication.js';
-import resolverAsync from '../../jobs/resolverMiddlewareAsync.js';
 
 export const router = new Router();
 

@@ -53,13 +53,19 @@ export class UserController {
         }
     }
 
-    static logoutUser(req, res, next) {
+
+    static async logoutUser(req, res, next) {
         try {
+
+            console.log('entramo nesse carai')
+            console.log(req.cookies['Authorization-Token']);
+
             res
             .status(200)
-            .clearCookie('Authorization-Token')
+            .set('Access-Control-Allow-Credentials', 'true')
             .set('Content-Type', 'application/json; charset=utf-8')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
+            .clearCookie('Authorization-Token')
             .json({ message: 'user token deleted' });
 
             return log.web('delete', '/user/logout', 200);

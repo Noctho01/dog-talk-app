@@ -1,0 +1,28 @@
+<html>
+    <head id="head">
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="./css/normalize/normalize.css">
+        <style>
+            .c-loader {
+                animation: is-rotating 1s infinite;
+                border: 6px solid #e5e5e5;
+                border-radius: 50%;
+                border-top-color: #51d4db;
+                height: 50px;
+                width: 50px;
+                margin: 50 auto
+            }
+
+            @keyframes is-rotating {
+                to {
+                    transform: rotate(1turn);
+                }
+            }
+        </style>
+    </head>
+    <body id="body">
+        <container id="container"></container>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/web-socket-js/1.0.0/web_socket.js"></script>
+        <script src="./js/index.js" type="module"></script>
+    </body>
+</html>

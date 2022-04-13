@@ -35,14 +35,14 @@ export class RoomServer {
         return this.#roomName;
     }
 
-    #emit(ws, type, body) { ws.send(JSON.stringify({ type, body })) }
-
+    // estabelece contrato com o cliente pelo servidor http
     handleUpgrade(req, socket, head) {
         return this.#wss.handleUpgrade(req, socket, head, ws => {
             this.#wss.emit('connection', ws, req);
         });
     }
 
+    // inicia conexão deste servidor ws
     onConnection() {
         console.log("iniciando servidor:", this.#roomName)
 
@@ -55,7 +55,6 @@ export class RoomServer {
                 switch(data.type) {
                     case "req_room_data":
                         const membersInRoom = await this.#getRoomDataProcess();
-                        console.log(membersInRoom)
                         this.#emit(ws, 'res_room_data', { membersInRoom });
                         break;
 
@@ -82,17 +81,30 @@ export class RoomServer {
 
             ws.on('close', () => {
                 const token = req.headers.cookie.substr(20)
+
+                this.#wss.clients.forEach(client => {
+                    this.#emit(client, "delete_canine_profile", 'ola')
+                })
+
                 jwt.verify(token, envConfig.SECRET_KEY, async (err, decode) => {
                     if (err) throw err
-                    
                     const canineProfile = await CanineProfile.initWithId(decode.id);
+
                     if (canineProfile.breed) {
                         const
                         room = await Room.initWithName(this.#roomName);
+
+                        console.log({
+                            id: canineProfile.id,
+                            inRoom: room.inRoom
+                        })
+
                         room.removeInRoom({ _id: canineProfile.id });
-                        await canineProfile.delete();
-                        await room.save();
+                        room.save();
+                        canineProfile.delete();
+                        
                         console.log('canineProfile deletado');
+
                     } else {
                         console.log('não existe perfil')
                     }
@@ -101,7 +113,10 @@ export class RoomServer {
         });
     }
 
+    // emite um evento
+    #emit(ws, type, body) { ws.send(JSON.stringify({ type, body })) }
 
+    // processo de busca de dados do usuario
     async #getRoomDataProcess() {
         const room = await Room.initWithName(this.#roomName);
         const canineProfiles = await CanineProfile.repository.findAll({_id: { $in: room.inRoom.map(user => user._id)}}, { canineProfile: { breed: 1, profilePictureUrl: 1}});

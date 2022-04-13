@@ -1,0 +1,91 @@
+#content {
+    height: 100%;
+    border-color: red;
+    border-width: 1px;
+    border-style: solid;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
+
+#content_info {
+    padding: 5px;
+    border-color: blue;
+    border-width: 1px;
+    border-style: solid;
+    display: grid;
+    grid-template-rows: 1fr 2fr;
+}
+
+#content_info_client {
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: 3fr 1fr;
+}
+
+#img_canine_profile {
+    border: 1px solid red;
+    grid-column: 1;
+    grid-row: 1;
+    padding: 5px;
+}
+
+#breed_canine_profile {
+    border: 1px solid red;
+    grid-column: 2;
+    grid-row: 1;
+    padding: 5px;
+}
+
+#button_back {
+    grid-column: 1;
+    grid-row: 2;
+    border: 1px solid red;
+    width: 150px;
+    height: 50px;
+    padding: 5px;
+}
+
+#button_logout {
+    grid-column: 2;
+    grid-row: 2;
+    border: 1px solid red;
+    width: 150px;
+    height: 50px;
+    padding: 5px;
+}
+
+#content_info_members {
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+}
+
+#content_chat {
+    padding: 5px;
+    border-color: blue;
+    border-width: 1px;
+    border-style: solid;
+    display: grid;
+    grid-template-rows: 1fr 8fr 1.5fr;
+}
+
+#content_chat_info {
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+}
+
+#content_chat_screen {
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+}
+
+#content_chat_input {
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+}

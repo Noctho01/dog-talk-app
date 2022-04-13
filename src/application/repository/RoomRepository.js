@@ -6,24 +6,14 @@ export class RoomRepository {
     constructor(roomModel) {
         this._roomModel = roomModel;
     }
-    
-
-    /**
-     * @param {Objects} props 
-     * @param {String} projection
-     * @returns {Promise<UserModel>}
-     */
-    async findOne(props, projection) {
-        return await this._roomModel.findOne(props, projection);
-    }
 
     /**
      * @param {String} roomid 
      * @param {String} projection 
      * @returns  {Promise<UserModel>}
      */
-    async findById(roomid, projection) {
-        return await this._roomModel.findById(roomid, projection)
+    async findOne(condition, projection) {
+        return await this._roomModel.findOne(condition, projection)
     }
 
     async deleteById(roomid) {

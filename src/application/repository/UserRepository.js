@@ -25,6 +25,10 @@ export class UserRepository {
         return await this._userModel.findOne(props, projection);
     }
 
+    async findAll(condition, projection) {
+        return await this._userModel.find(condition, projection);
+    }
+
 
     /**
      * @param {String} userid 

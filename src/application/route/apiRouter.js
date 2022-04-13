@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { UserController } from '../controller/UserController.js';
 import { RoomController } from '../controller/RoomController.js';
+import { CanineProfileController } from '../controller/CanineProfileController.js';
 import { passport } from '../middlewares/authentication.js';
 
 export const apiRouter = new Router();
@@ -17,10 +18,8 @@ apiRouter
 .delete('/api/v1/user', passport.authenticate('jwt', { session: false }), UserController.delete)
 
 // CanineProfile Routers
-.post('/api/v1/canineprofile', passport.authenticate('jwt', { session: false }), CanineProfile.createProfile)
+.post('/api/v1/canineprofile', passport.authenticate('jwt', { session: false }), CanineProfileController.createProfile)
 
 // Rooms Routers
 apiRouter
 .get('/api/v1/rooms', passport.authenticate('jwt', { session: false }), RoomController.getRooms)
-.get('/api/v1/room/select/:roomName', passport.authenticate('jwt', { session: false }), RoomController.selectRoom)
-.get('/api/v1/room/canineProfile', passport.authenticate('jwt', { session: false }), RoomController.getCanineProfile)

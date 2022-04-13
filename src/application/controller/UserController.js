@@ -1,43 +1,40 @@
 import jwt from 'jsonwebtoken';
 import envConfig from '../../envConfig.js';
 import { Types } from '../model/database/db.js';
-import { UserModel } from '../model/UserModel.js';
-import { UserRepository } from '../repository/UserRepository.js';
-import { User } from "../domain/User.js";
 import { Log as log} from '../../jobs/log.js';
-
-const userRepository = new UserRepository(UserModel);
-User.initRepository(userRepository);
+import { userServices } from '../services/UserServices.js';
 
 export class UserController {
 
     static async create(req, res, next) {
         const { email, password: pwdHash } = req.body;
-        try {
-            const user = new User(new Types.ObjectId(), email, pwdHash);
-            await user.save();
+        log.web('post', '/user', 201);
+
+        try {            
+            await userServices.create({ id: new Types.ObjectId(), email, pwdHash });
             log.debug('/UserController.js', 39, 'usuario criado');
 
-            res
+            return res
             .status(201)
             .set('Content-Type', 'application/json; charset=utf-8')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
             .json({ message: 'user created' });
-            
-            return log.web('post', '/user', 201);
+
 
         } catch (err) {
             log.web('post', '/user', 500);
-            next(err.message);
+            next(err);
         }
     }
 
     static loginUser(req, res, next) {
+        log.web('post', '/user/login', 201);
         const { id, email } = req.user;
+
         try {                   
             const token = jwt.sign({ id, email }, envConfig.SECRET_KEY, { expiresIn: '5h' });
 
-            res
+            return res
             .status(201)
             .set('Content-Type', 'application/json; charset=utf-8')
             .set('Access-Control-Allow-Credentials', 'true')
@@ -45,22 +42,18 @@ export class UserController {
             .cookie('Authorization-Token', token)
             .json({ message: 'user token created' });
 
-            return log.web('post', '/user/login', 201);
-
         } catch (err) {
             log.web('post', '/user/login', 400);
-            next(err.message);
+            next(err);
         }
     }
 
 
     static async logoutUser(req, res, next) {
+        log.web('delete', '/user/logout', 200);
+
         try {
-
-            console.log('entramo nesse carai')
-            console.log(req.cookies['Authorization-Token']);
-
-            res
+            return res
             .status(200)
             .set('Access-Control-Allow-Credentials', 'true')
             .set('Content-Type', 'application/json; charset=utf-8')
@@ -68,18 +61,18 @@ export class UserController {
             .clearCookie('Authorization-Token')
             .json({ message: 'user token deleted' });
 
-            return log.web('delete', '/user/logout', 200);
-
         } catch (err) {
             log.web('delete', '/user/logout', 400);
-            next(err.message);
+            next(err);
         }
     }
 
     static async getUserEmail(req, res, next) {
+        log.web('get', '/account', 200);
         const { id } = req.user;
+
         try {
-            const user = await User.initWithId(id);
+            const user = await userServices.getEmail(id);
 
             res
             .status(200)
@@ -88,35 +81,30 @@ export class UserController {
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
             .json({ email: user.email });
 
-            return log.web('get', '/account', 200);
-            
-
         } catch (err) {
             log.web('get', '/user/email', 400);
-            next(err.message);
+            next(err);
         }
     }
 
     static async delete(req, res, next) {
+        log.web('delete', '/user', 200);
         const { id } = req.user;
+
         try {
             const user = await User.initWithId(id);
             await user.delete();
 
-            res
-            .clearCookie('Authorization-Token')
-            .set('Content-Type', 'application/json; charset=utf-8')
-            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
-
-            log.web('delete', '/user', 200);
-
             return res
             .status(200)
+            .set('Content-Type', 'application/json; charset=utf-8')
+            .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
+            .clearCookie('Authorization-Token')
             .json({ message: 'user deleted' });
 
         } catch (err) {
             log.web('delete', '/user', 400);
-            next(err.message);
+            next(err);
         }
     }
 }

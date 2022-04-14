@@ -4,6 +4,11 @@ export default () => {
         const passwordVal = document.getElementById("password").value;
         const alertBox = document.getElementById("alert_box");
 
+        document.getElementById("button_register").addEventListener('click', async () => {
+            localStorage.setItem("layerAtual", "RegisterLayer")
+            location.reload();
+        })
+
         alertBox.innerHTML = ""
 
         if (!emailVal || !passwordVal || emailVal === "" || passwordVal === "") {

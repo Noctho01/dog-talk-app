@@ -48,5 +48,21 @@ export default class Components {
             <b><i>${canineProfile.breed[0].toUpperCase() + canineProfile.breed.substr(1)}</i></b>
         </div>`
     }
-}
 
+    static chatInfo(roomName, inRoom) {
+        return `<div><b style="font-size: 50px">${roomName[0].toUpperCase() + roomName.substr(1)}</b>  <i>${inRoom} ${inRoom > 1?'members':'member'}....</i></div>`
+    }
+    
+    static sendMsg(msg) {
+        return `<div align="right" class="msg-user"><p>${msg}</p></div>`;
+    }
+
+    static getMsg(body) {
+        return `<div align="left" class="msg-outher-user">
+            <img src="${body.profilePictureUrl}" height="50" width="50" style="border_radius: 100%">
+            <b>${body.breed[0].toUpperCase() + body.breed.substr(1)}</b>
+            <p>${body.message}</p>
+        </div>`;
+    }
+
+}

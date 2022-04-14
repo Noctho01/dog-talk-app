@@ -12,7 +12,9 @@ export default async () => {
         membersInfo : document.getElementById("content_info_members"),
         chatInfo : document.getElementById("content_chat_info"),
         chatScreen : document.getElementById("content_chat_screen"),
-        chatInput : document.getElementById("content_chat_input")
+        chatInput : document.getElementById("content_chat_input"),
+        sender: document.getElementById("sender"),
+        buttonSend: document.getElementById("buttonSend")
     };
 
     // INIT SETTERS ------------------------------------------------------------------------------------------------------------------------------
@@ -20,6 +22,8 @@ export default async () => {
     
     if (resultRequest.error) {
         Components.documents.alertBox.innerHTML = Components.alertError(resultRequest.error, resultRequest.statusError);
+        localStorage.setItem('layerAtual', 'RoomsLayer');
+        location.reload()
 
     } else if (resultRequest.success) {
         const canineProfile = resultRequest.success;
@@ -35,25 +39,36 @@ export default async () => {
     }
 
     function initWebSocketServerCommunication(roomName) {
-        const wsclient = new Wsclient(`ws://localhost:3030/${roomName.toLowerCase()}`, Components);
+        const wsclient = new Wsclient(`ws://localhost:3030/${roomName.toLowerCase()}`, Components, roomName);
         wsclient.onmessage = wsclient.message
 
         //  EVENTS ------------------------------------------------------------------------------------------------------------------------------
         document.getElementById("button_back").addEventListener('click', () => {
+            wsclient.close();
             localStorage.setItem("layerAtual", "RoomsLayer")
             location.reload()
         })
 
         document.getElementById("button_logout").addEventListener('click', async () => {
+            wsclient.close();
             await setLogoutUser()
         })
 
-        window.onunload = () => {
-            wsclient.close();
-            localStorage.getItem("layerAtual") === "RoomChatLayer"
-                ? localStorage.setItem("layerAtual", "RoomsLayer")
-                : null
-            
-        }
+        document.getElementById("buttonSend").addEventListener('click', () => {
+            if (Components.documents.sender.value != "" || Components.documents.sender.value != " " || Components.documents.sender.value != undefined || Components.documents.sender.value != null) {
+                const charQuebraLinha = "<br>";
+                const msg = Components.documents.sender.value
+                    .replace(/ /g, "&nbsp;")
+                    .replace(/\n/g, charQuebraLinha);
+
+                Components.documents.chatScreen.innerHTML += Components.sendMsg(msg);
+                Components.documents.sender.value = '';
+                Components.documents.sender.select();
+
+                Components.documents.chatScreen.scrollTo(Components.documents.chatScreen.scrollWidth, Components.documents.chatScreen.scrollHeight + 1000);
+
+                wsclient.send(msg);
+            }
+        });
     }
 }

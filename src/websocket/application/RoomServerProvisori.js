@@ -39,21 +39,32 @@ class RoomServer extends WebSocketServer {
 
             clientListen.on("message", msgBuffer => {
                 const msg = msgBuffer.toString();
-                this.clients.forEach(client => {
-                    if (client !== clientListen) {
-                        client.send(JSON.stringify({
-                            type: 'message',
-                            message: msg
-                        }));
-                    }
-                })
+                const token = req.headers.cookie.substr(20)
+                
+                jwt.verify(token, envConfig.SECRET_KEY, async (err, decode) => {
+                    if (err) return this.emit('error', err);
+                    const {canineProfile} = await canineProfileServices.findOne(decode.id);
+
+                    this.clients.forEach(client => {
+                        if (client !== clientListen) {
+                            client.send(JSON.stringify({
+                                type: 'message',
+                                body: {
+                                    message: msg,
+                                    breed: canineProfile.breed,
+                                    profilePictureUrl: canineProfile.profilePictureUrl
+                                }
+                            }));
+                        }
+                    })
+                });
             });
 
-            clientListen.on("close", async () => {
+            clientListen.on("close", () => {
                 console.log('desconnected')
                 const token = req.headers.cookie.substr(20)
                 jwt.verify(token, envConfig.SECRET_KEY, async (err, decode) => {
-                    if (err) this.emit('error', err);
+                    if (err) return this.emit('error', err);
                     console.log('iniciando delete de perfil canino');
                     await canineProfileServices.delete(decode.id);
                     await roomServices.removeInRoom(this.roomName, decode.id);

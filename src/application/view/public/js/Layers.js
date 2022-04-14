@@ -19,9 +19,12 @@ export class Layers {
                     <div id="content_info_members">room members</div>
                 </div>
                 <div id="content_chat">
-                    <div id="content_chat_info">room info</div>
-                    <div id="content_chat_screen">chat</div>
-                    <div id="content_chat_input">chat input</div>
+                    <div id="content_chat_info">room_info</div>
+                    <div id="content_chat_screen">chat_screen</div>
+                    <div id="content_chat_input">
+                        <textarea id="sender" cols="40" rows="5" maxlength="419" wrap="hard"></textarea>
+                        <button id="buttonSend">SEND</button>
+                    </div>
                 </div>
             </div>
             <div id="alert_box"></div>
@@ -46,7 +49,7 @@ export class Layers {
                 <div class="input">
                     <button id="buttonLogin">Login</button>
                 </div>
-
+                <button id="button_register">register</button>
                 <div id="alert_box">
                 </div>
             </div>`

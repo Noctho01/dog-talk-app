@@ -35,7 +35,7 @@ application
 // middlewares
 application
 .use(cors({
-    origin: 'http://localhost:3001',
+    origin: '*',
     methods: ['DELETE','GET','POST','PUT','PATH'],
     credentials: true
 }))

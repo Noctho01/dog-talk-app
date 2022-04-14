@@ -15,11 +15,9 @@ export default async () => {
         if (responseInJson.error) {
             if (responseInJson.error == "Token expirado"  || responseInJson.error == "Não existe token") {
                 localStorage.setItem('layerAtual', 'LoginLayer');
-                window.location.href = "/"
+                location.reload()
             }
-
-            localStorage.setItem('layerAtual', 'RoomsLayer');
-            window.location.href = "/"
+            
             return { error: responseInJson.error, statusError: response.status }
 
         } else if (responseInJson.canineProfile && responseInJson.canineProfile.breed) {

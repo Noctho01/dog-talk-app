@@ -1,39 +1,32 @@
 #content {
+    background-color: black;
     height: 100%;
-    border-color: red;
-    border-width: 1px;
-    border-style: solid;
     display: grid;
     grid-template-columns: 1fr 2fr;
 }
 
 #content_info {
     padding: 5px;
-    border-color: blue;
-    border-width: 1px;
-    border-style: solid;
     display: grid;
     grid-template-rows: 1fr 2fr;
 }
 
 #content_info_client {
-    border-color: black;
-    border-width: 1px;
     border-style: solid;
+    border-radius: 0% 50% 0% 0%;
     display: grid;
     grid-template-columns: 1fr 2fr;
     grid-template-rows: 3fr 1fr;
+    background-color: white;
 }
 
 #img_canine_profile {
-    border: 1px solid red;
     grid-column: 1;
     grid-row: 1;
     padding: 5px;
 }
 
 #breed_canine_profile {
-    border: 1px solid red;
     grid-column: 2;
     grid-row: 1;
     padding: 5px;
@@ -42,7 +35,6 @@
 #button_back {
     grid-column: 1;
     grid-row: 2;
-    border: 1px solid red;
     width: 150px;
     height: 50px;
     padding: 5px;
@@ -51,41 +43,96 @@
 #button_logout {
     grid-column: 2;
     grid-row: 2;
-    border: 1px solid red;
     width: 150px;
     height: 50px;
     padding: 5px;
 }
 
 #content_info_members {
-    border-color: black;
-    border-width: 1px;
-    border-style: solid;
+    background-color: white;
+    overflow-y: scroll;
 }
 
 #content_chat {
     padding: 5px;
-    border-color: blue;
-    border-width: 1px;
-    border-style: solid;
+    background-color: black;
     display: grid;
-    grid-template-rows: 1fr 8fr 1.5fr;
+    grid-template-rows: 1fr 500px 2fr;
 }
 
 #content_chat_info {
-    border-color: black;
-    border-width: 1px;
-    border-style: solid;
+    padding-left: 20px;
+    color: white;
+    background-color: black;
 }
 
 #content_chat_screen {
-    border-color: black;
-    border-width: 1px;
+    background-color: #e9f2f980;
+    background-repeat: repeat-x;
     border-style: solid;
+    border-color: #e9f2f980;
+    border-width: 1px;
+    max-height: 500px;
+    padding: 10px;
+    overflow-y: scroll;
 }
 
 #content_chat_input {
-    border-color: black;
-    border-width: 1px;
+    padding: 20px 10px 20px 20px;
+    background-color: black;
+}
+
+#buttonSend {
+    background-color: #9cc4e4;
+    position: relative;
+    width: 100px;
+    height: 50px;;
+    border-radius: 0px 20px 20px 0px;
+    border-width: 0px;
+    bottom: 20px;
+    padding: 0px 20px 0px 0px;
+}
+
+#sender {
+    font-size: 30px;
+    padding: 5px 10px 10px 20px;
     border-style: solid;
+    border-width: 0px;
+    border-radius: 20px 0px 0px 20px;
+    height: 50px;
+    resize: none;
+    position: relative;
+
+}
+
+.msg-user {
+    font-size: 30px;
+    color: white;
+    border-style: solid;
+    border-width: 0px;
+    border-radius: 30px 30px 0px 30px;
+    background-color: #3a89c9;
+    padding: 20px;
+    margin: 20px 20px;
+    margin-left: auto; 
+    margin-right: 20px;
+    width: max-content;
+    max-width: 400px;
+    text-align: left;
+    word-break: break-all;
+}
+
+.msg-outher-user {
+    font-size: 30px;
+    color: black;
+    border-style: solid;
+    border-width: 0px;
+    border-radius: 30px 30px 30px 0px;
+    background-color: #e9f2f9;
+    padding: 20px;
+    margin: 20px 20px;
+    width: max-content;
+    max-width: 400px;
+    text-align: left;
+    word-break: break-all;
 }

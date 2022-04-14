@@ -11,36 +11,54 @@ class RoomServer extends WebSocketServer {
     }
 
     async roomMembersNotify() {
-        const profiles = await canineProfileServices.findAll({ roomName: this.roomName });
-        this.clients.forEach(client => {
-            client.send(JSON.stringify({
-                type: 'room_members_updated',
-                membersInRoom: profiles
-            }));
-        });
-    }
-
-    onconnection(clientListen) {
-        clientListen.on("message", msgBuffer => {
-            const msg = msgBuffer.toString();
-            this.clients.forEach(client => {
-                if (client !== clientListen) {
-                    client.send(JSON.stringify({
-                        type: 'message',
-                        message: msg
-                    }));
+        try {
+            const result = await canineProfileServices.findAll();
+            const profiles = [];
+            result.forEach(user => {
+                if (user.canineProfile && user.canineProfile.roomName === this.roomName) {
+                    profiles.push(user.canineProfile)
                 }
             })
-        });
-
-        clientListen.on("close", async () => {
-            const token = req.headers.cookie.substr(20)
-            jwt.verify(token, envConfig.SECRET_KEY, async (err, decode) => {
-                if (err) this.emit('error', err);
-                await canineProfileServices.delete(decode.id);
-                await roomServices.removeInRoom(thi.roomName, decode.id);
+            
+            this.clients.forEach(client => {
+                client.send(JSON.stringify({
+                    type: 'room_members_updated',
+                    membersInRoom: profiles
+                }));
             });
-        });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    onconnection(clientListen, req) {
+        try {
+            roomServices.emit(`update_${this.roomName.toLowerCase()}`);
+
+            clientListen.on("message", msgBuffer => {
+                const msg = msgBuffer.toString();
+                this.clients.forEach(client => {
+                    if (client !== clientListen) {
+                        client.send(JSON.stringify({
+                            type: 'message',
+                            message: msg
+                        }));
+                    }
+                })
+            });
+
+            clientListen.on("close", async () => {
+                const token = req.headers.cookie.substr(20)
+                jwt.verify(token, envConfig.SECRET_KEY, async (err, decode) => {
+                    if (err) this.emit('error', err);
+                    await canineProfileServices.delete(decode.id);
+                    await roomServices.removeInRoom(this.roomName, decode.id);
+                });
+            });
+
+        } catch (err) {
+            console.error(err);
+        }
     }
 }
 

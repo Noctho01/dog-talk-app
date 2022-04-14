@@ -17,11 +17,6 @@ class RoomServices extends InterfaceServices {
 
     async getInRoom(roomName) {
         const room = await this.dependences.repository.findOne({ name: roomName }, 'inRoom');
-        room.inRoom.forEach(user => {
-            console.log(user._id)
-            user._id = user._id.toString();
-            console.log(user._id)
-        });
         return room.inRoom
     }   
 
@@ -39,7 +34,7 @@ class RoomServices extends InterfaceServices {
 
     async removeInRoom(roomName, userid) {
         let room = await this.dependences.repository.findOne({ name: roomName }, 'inRoom');
-        if (!room.inRoom.include({ _id: userid })) return this.emit('error', new Error('este usuario não é um membro desta sala'));
+        if (!room.inRoom.some(user => user._id === userid )) return this.emit('error', new Error('este usuario não é um membro desta sala'));
         room.inRoom = room.inRoom.filter(user => user._id !== userid);
         await room.save();
         return this.emit(`update_${roomName.toLowerCase()}`);
@@ -53,7 +48,8 @@ const roomRepository = new RoomRepository(RoomModel);
 roomServices.injectionDependences({ repository: roomRepository });
 
 // Escuta de eventos
-roomServices.on('update_quintal', quintalServer.roomMembersNotify)
-roomServices.on('update_sala', salaServer.roomMembersNotify)
-roomServices.on('update_esquina', esquinaServer.roomMembersNotify)
-roomServices.on('update_cozinha', cozinhaServer.roomMembersNotify)
+roomServices.on('update_quintal', async () => await quintalServer.roomMembersNotify())
+roomServices.on('update_sala', async () => await salaServer.roomMembersNotify())
+roomServices.on('update_esquina', async () => await esquinaServer.roomMembersNotify())
+roomServices.on('update_cozinha', async () => await cozinhaServer.roomMembersNotify())
+roomServices.on('error', err => console.log('error aqui:', err))

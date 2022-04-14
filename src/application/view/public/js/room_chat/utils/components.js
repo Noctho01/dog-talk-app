@@ -43,7 +43,6 @@ export default class Components {
 
     static member(canineProfile) {
         const style = "border_radius: 20px";
-
         return `<div>
             <img src="${canineProfile.profilePictureUrl}" height="50" width="50" style="${style}">
             <b><i>${canineProfile.breed[0].toUpperCase() + canineProfile.breed.substr(1)}</i></b>

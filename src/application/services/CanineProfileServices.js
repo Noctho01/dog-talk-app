@@ -82,3 +82,5 @@ export const canineProfileServices = new CanineProfileServices();
 
 const canineProfileRepository = new CanineProfileRepository(UserModel);
 canineProfileServices.injectionDependences({ repository: canineProfileRepository, axios });
+
+canineProfileServices.on('error', err => console.log('error aqui:', err))

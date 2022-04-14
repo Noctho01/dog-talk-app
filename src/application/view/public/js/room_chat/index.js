@@ -1,15 +1,18 @@
 import getCanineProfile from "./utils/getCanineProfile.js";
 import Components from "./utils/components.js";
 import setLogoutUser from  "./utils/setLogoutUser.js";
-import { WsClient } from "./wsclient/WsClient.js";
+import { Wsclient } from "./wsclient/Wscliente.js";
 
 
 export default async () => {
 
     //  EVENTS ------------------------------------------------------------------------------------------------------------------------------
     document.getElementById("button_back").addEventListener('click', () => {
-        localStorage.setItem("layerAtual", "RoomsLayer")
         window.location.href = "/"
+        setTimeout(() => {
+            localStorage.setItem("layerAtual", "RoomsLayer")
+            window.location.href = "/"
+        }, 1000)
     })
 
     document.getElementById("button_logout").addEventListener('click', async () => {
@@ -53,7 +56,8 @@ export default async () => {
     }
 
     function initWebSocketServerCommunication(roomName) {
-        const ws = new WsClient(WebSocket, roomName, Components);
-        ws.execute();
+        const wsclient = new Wsclient(`ws://localhost:3030/${roomName.toLowerCase()}`, Components);
+        wsclient.onopen = wsclient.init
+        wsclient.onmessage = wsclient.message
     }
 }

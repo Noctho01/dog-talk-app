@@ -1,19 +1,21 @@
-import { RoomServer } from "./application/RoomServer.js";
+import { quintalServer, salaServer, cozinhaServer, esquinaServer } from "./application/RoomServerProvisori.js";
 import { parse } from "url";
 
 export default server => {
-    const
-    roomsListNames = ['quintal', 'sala', 'cozinha', 'esquina'],
-    wssRooms = roomsListNames.map(roomName => new RoomServer(roomName));
-    
-    wssRooms.forEach(wss => wss.onConnection());
-
     server.on('upgrade', (req, socket, head) => {
         const { pathname } = parse(req.url);
-        wssRooms.forEach(wss => {
-            if (wss.roomName === pathname.substr(1)) {
-                wss.handleUpgrade(req, socket, head);
-            }
-        })
+        
+        if (quintalServer.roomName === pathname.substr(1)) {
+            quintalServer.handleUpgrade(req, socket, head);
+
+        } else if (salaServer.roomName === pathname.substr(1)) {
+            salaServer.handleUpgrade(req, socket, head);
+
+        } else if (cozinhaServer.roomName === pathname.substr(1)) {
+            cozinhaServer.handleUpgrade(req, socket, head);
+
+        } else if (esquinaServer.roomName === pathname.substr(1)) {
+            esquinaServer.handleUpgrade(req, socket, head);
+        }
     });
 }

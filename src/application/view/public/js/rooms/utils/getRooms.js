@@ -23,7 +23,7 @@ export default async (alertBox, setRoomSelect) => {
             alertBox,innerHTML = `<p>${responseInJson.error} <i>Status Code <b>${response.status}</b></i></p>`
         } else if (responseInJson.rooms) {
             responseInJson.rooms.forEach(room => {
-                roomsList.innerHTML += `<li class="roomInList"><b class="roomName">${room.name}</b> (<i class="inRoom">${room.inRoom}</i> / <i class="limit">${room.limit}</i>)</li>`;
+                roomsList.innerHTML += `<li class="roomInList"><b class="roomName">${room.name}</b> (<i class="inRoom">${room.inRoom.length}</i> / <i class="limit">${room.limit}</i>)</li>`;
             });
 
             const roomInList = document.getElementsByClassName("roomInList");

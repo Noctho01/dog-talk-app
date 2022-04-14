@@ -35,7 +35,7 @@ export default async () => {
 
     // INIT SETTERS ------------------------------------------------------------------------------------------------------------------------------
     const resultRequest = await getCanineProfile();
-
+    
     if (resultRequest.error) {
         Components.documents.alertBox.innerHTML = Components.alertError(resultRequest.error, resultRequest.statusError);
 

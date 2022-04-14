@@ -10,8 +10,8 @@ class UserServices extends InterfaceServices {
         return users;
     }
 
-    async getEmail(userid) {
-        const user = await this.dependences.repository.findOne({ _id: userid }, 'email');
+    async getUser(userid) {
+        const user = await this.dependences.repository.findOne({ _id: userid }, 'email canineProfile');
         if (!user) return this.emit('error', new Error('Usuario não encontrado'));
         return user;
     }
@@ -21,7 +21,7 @@ class UserServices extends InterfaceServices {
      * @returns {void}
      */
     async create(newuser) {
-        const user = await User.#repository.findOne({ _id: newuser.id }, 'email');
+        const user = await this.dependences.repository.findOne({ _id: newuser.id }, 'email');
         if (user || user.email === newuser.email) return this.emit('error', new Error('Este usuario já existe'));
         await this.dependences.repository.create({
             _id: newuser.id,

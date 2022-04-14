@@ -9,11 +9,8 @@ export class UserController {
     static async create(req, res, next) {
         const { email, password: pwdHash } = req.body;
         log.web('post', '/user', 201);
-
         try {            
             await userServices.create({ id: new Types.ObjectId(), email, pwdHash });
-            log.debug('/UserController.js', 39, 'usuario criado');
-
             return res
             .status(201)
             .set('Content-Type', 'application/json; charset=utf-8')
@@ -30,10 +27,8 @@ export class UserController {
     static loginUser(req, res, next) {
         log.web('post', '/user/login', 201);
         const { id, email } = req.user;
-
         try {                   
             const token = jwt.sign({ id, email }, envConfig.SECRET_KEY, { expiresIn: '5h' });
-
             return res
             .status(201)
             .set('Content-Type', 'application/json; charset=utf-8')
@@ -51,7 +46,6 @@ export class UserController {
 
     static async logoutUser(req, res, next) {
         log.web('delete', '/user/logout', 200);
-
         try {
             return res
             .status(200)
@@ -67,19 +61,19 @@ export class UserController {
         }
     }
 
-    static async getUserEmail(req, res, next) {
+    static async getUser(req, res, next) {
         log.web('get', '/account', 200);
         const { id } = req.user;
 
         try {
-            const user = await userServices.getEmail(id);
+            const user = await userServices.getUser(id);
 
             res
             .status(200)
             .set('Access-Control-Allow-Credentials', 'true')
             .set('Content-Type', 'application/json; charset=utf-8')
             .set('X-Powered-By', 'PHP/5.5.9-1ubuntu4.11')
-            .json({ email: user.email });
+            .json({ email: user.email, canineProfile: user.canineProfile });
 
         } catch (err) {
             log.web('get', '/user/email', 400);
@@ -89,12 +83,9 @@ export class UserController {
 
     static async delete(req, res, next) {
         log.web('delete', '/user', 200);
-        const { id } = req.user;
-
+        const { id: userid } = req.user;
         try {
-            const user = await User.initWithId(id);
-            await user.delete();
-
+            await userServices.delete(userid);
             return res
             .status(200)
             .set('Content-Type', 'application/json; charset=utf-8')

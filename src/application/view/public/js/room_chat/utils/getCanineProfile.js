@@ -1,5 +1,5 @@
 export default async () => {    
-    const urlGet = 'http://localhost:3030/api/v1/room/canineProfile';
+    const urlGet = 'http://localhost:3030/api/v1/canineProfile';
     const options = {
         method: 'GET',
         credentials: 'include',
@@ -17,6 +17,7 @@ export default async () => {
                 localStorage.setItem('layerAtual', 'LoginLayer');
                 window.location.href = "/"
             }
+
             return { error: responseInJson.error, statusError: response.status }
 
         } else if (responseInJson.canineProfile.breed) {
@@ -25,6 +26,7 @@ export default async () => {
 
 
     } catch (err) {
+        console.log('3')
         return { error: err, statusError: 500 }
     }
 }

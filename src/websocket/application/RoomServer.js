@@ -1,22 +1,6 @@
-import { WebSocketServer } from "ws";
 import jwt from "jsonwebtoken";
-
+import { WebSocketServer } from "ws";
 import envConfig from "../../envConfig.js";
-
-import { RoomModel } from '../../application/model/RoomModel.js';
-import { RoomRepository } from '../../application/repository/RoomRepository.js';
-import { Room } from "../../application/domain/Room.js";
-
-import { UserModel } from '../../application/model/UserModel.js';
-import { CanineProfile } from "../../application/domain/CanineProfile.js";
-import { CanineProfileRepository } from "../../application/repository/CanineProfileRepository.js";
-
-const
-roomRepository = new RoomRepository(RoomModel),
-canineProfileRepository = new CanineProfileRepository(UserModel);
-
-Room.initRepository(roomRepository);
-CanineProfile.initRepository(canineProfileRepository);
 
 export class RoomServer {
 

@@ -3,7 +3,7 @@ import { Schema, model, Types } from "./database/db.js";
 const roomSchema = new Schema({
     name: String,
     limit: Number,
-    inRoom: [{_id:Types.ObjectId}]
+    inRoom: [{_id:String}]
 }, {
     autoCreate: true,
     timestamps: true,

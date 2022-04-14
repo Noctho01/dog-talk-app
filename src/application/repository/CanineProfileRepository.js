@@ -4,8 +4,8 @@ export class CanineProfileRepository {
         this._userModel = UserModel;
     }
 
-    async findAll(condition, projection) {
-        return await this._userModel.find(condition, projection);
+    async findAll(condition) {
+        return await this._userModel.find(condition, 'canineProfile');
     }
 
     async findById(id) {

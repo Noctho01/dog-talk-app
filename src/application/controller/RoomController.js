@@ -1,8 +1,5 @@
 import { Log as log } from "../../jobs/log.js";
-import { roomServices } from "../domain/RoomServices.js";
-
-const roomRepository = new RoomRepository(RoomModel);
-roomServices.injectionDependences({repository: roomRepository});
+import { roomServices } from "../services/RoomServices.js";
 
 export class RoomController {
     static async getRooms(req, res, next) {

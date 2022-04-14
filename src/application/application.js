@@ -23,11 +23,11 @@ const application = express();
 application
 .engine('html', renderFile)
 .set('view engine', 'html')
-.set('views', path.join(__dirname, 'view'));
+.set('views', path.join(__dirname, '/view'));
 
 // parsers
 application
-.use(express.static(path.join(__dirname, 'view/public')))
+.use(express.static(path.join(__dirname, '/view/public')))
 .use(express.urlencoded({ extended: true }))
 .use(express.json())
 .use(cookieParser());

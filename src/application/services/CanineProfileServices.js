@@ -1,4 +1,4 @@
-import { InterfaceServices } from "./InterfaceServices";
+import { InterfaceServices } from "./InterfaceServices.js";
 import { UserModel } from "../model/UserModel.js";
 import { CanineProfileRepository } from "../repository/CanineProfileRepository.js";
 import axios from "axios";
@@ -28,7 +28,7 @@ class CanineProfileServices extends InterfaceServices {
         Object.keys(breedListResponse.data.message).forEach(breed => breeds.push(breed));
 
         if (idInRoom.length > 0) {
-            let breedsInUse = await CanineProfile.repository.findAll({ _id: { $in: idInRoom }}, { canineProfile: { breed: 1 }});
+            let breedsInUse = await this.dependences.repository.findAll({ _id: { $in: idInRoom }}, { canineProfile: { breed: 1 }});
             do { provisionalCanineProfile.breed = breeds[parseInt(Math.random() * ((breeds.length - 1) - 0) + 0)] }
             while (breedsInUse.includes(provisionalCanineProfile.breed));
 
@@ -59,6 +59,18 @@ class CanineProfileServices extends InterfaceServices {
         if (!updateResult.acknowledged) return this.emit('error', new Error('As alterações deste perfil canino não foram salvas'));
     }
 
+    async findAll(condition) {
+        const profiles = await this.dependences.repository.findAll(condition);
+        if (profiles.length === 0) return this.emit('error', new Error('Perfis não encontrados'));
+        return profiles;
+    }
+
+    async findOne(userid) {
+        const user = await this.dependences.repository.findById(userid );
+        if (!user) return this.emit('error', new Error('Usuario não encontrado'));
+        return user;
+    }
+
     async delete(userid) {
         const resultDelete = await this.dependences.repository.deleteById(userid);
         if (!resultDelete.acknowledged) return this.emit('error', new Error('processo de deletar o perfil canino falhou'));
@@ -69,4 +81,4 @@ class CanineProfileServices extends InterfaceServices {
 export const canineProfileServices = new CanineProfileServices();
 
 const canineProfileRepository = new CanineProfileRepository(UserModel);
-canineProfileServices.InterfaceServices({ repository: canineProfileRepository, axios });
+canineProfileServices.injectionDependences({ repository: canineProfileRepository, axios });

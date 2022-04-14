@@ -20,7 +20,7 @@ export default async (alertBox, roomName) => {
         if (responseInJson.error) body.innerHTML = `<p>${responseInJson.error} <i>Status Code <b>${response.status}</b></i></p>`
         if (responseInJson.message && responseInJson.message === 'canine profile created') {
             localStorage.setItem("layerAtual", "RoomChatLayer");
-            window.location.href = '/'
+            location.reload()
         }
 
     } catch (err) {

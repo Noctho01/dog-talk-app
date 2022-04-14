@@ -10,8 +10,6 @@ if (!layerAtual) {
     localStorage.setItem("layerAtual", "LoginLayer")
 }
 
-console.log(layerAtual)
-
 switch(layerAtual) {
     case 'RoomChatLayer':
         document.getElementById("container").innerHTML = "<div class='c-loader'></div>";

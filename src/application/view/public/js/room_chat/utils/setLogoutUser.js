@@ -15,17 +15,16 @@ export default async () => {
         if (responseInJson.error) {
             if (responseInJson.error == "Token expirado" || responseInJson.error == "Não existe token") {
                 localStorage.setItem('layerAtual', 'LoginLayer');
-                return window.location.href = "/"
+                location.reload()
             }
             return { error: responseInJson.error, statusError: response.status }
 
         } else if (responseInJson.message && responseInJson.message === 'user token deleted') {
             localStorage.setItem("layerAtual", "LoginLayer")
-            window.location.href = "/"
+            location.reload()
         }
 
     } catch (err) {
-        console.log("ERROR", err)
         return { error: err, statusError: 500 }
     }
 }

@@ -26,6 +26,8 @@ class RoomServer extends WebSocketServer {
                     membersInRoom: profiles
                 }));
             });
+
+            console.log('sala notificada')
         } catch (err) {
             console.error(err);
         }
@@ -48,9 +50,11 @@ class RoomServer extends WebSocketServer {
             });
 
             clientListen.on("close", async () => {
+                console.log('desconnected')
                 const token = req.headers.cookie.substr(20)
                 jwt.verify(token, envConfig.SECRET_KEY, async (err, decode) => {
                     if (err) this.emit('error', err);
+                    console.log('iniciando delete de perfil canino');
                     await canineProfileServices.delete(decode.id);
                     await roomServices.removeInRoom(this.roomName, decode.id);
                 });

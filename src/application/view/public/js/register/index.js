@@ -31,7 +31,8 @@ export default () => {
                 if (responseInJson.error) alertBox.innerHTML = `<p>${responseInJson.error} <i>Status Code <b>${response.status}</b></i></p>`
                 if (responseInJson.message && responseInJson.message === 'user created') {
                     window.alert('Conta criada com sucesso!');
-                    window.location.href = '/login';
+                    localStorage.setItem("layerAtual", "LoginLayer")
+                    location.reload();
                 }
             } catch (err) {
                 alertBox.innerHTML = `<p><b>Server Error:</b> <i>${err}</i></p>`;

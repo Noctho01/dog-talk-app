@@ -7,8 +7,6 @@ export class Wsclient extends WebSocket {
         this.#components = Components
     }
 
-    init() { window.alert('you`re connected to server') }
-
     message(msg) {
         const data = JSON.parse(msg.data);
         switch (data.type) {

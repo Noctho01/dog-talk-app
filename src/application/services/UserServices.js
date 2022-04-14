@@ -45,5 +45,3 @@ export const userServices = new UserServices();
 
 const userRepository = new UserRepository(UserModel);
 userServices.injectionDependences({ repository: userRepository });
-
-userServices.on('error', err => console.log('error aqui:', err))

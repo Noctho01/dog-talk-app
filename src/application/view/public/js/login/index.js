@@ -29,7 +29,7 @@ export default () => {
                 if (responseInJson.message && responseInJson.message === 'user token created') {
                     window.alert('Login feito com sucesso!');
                     localStorage.setItem("layerAtual", "RoomsLayer")
-                    window.location.href = "/"
+                    location.reload();
                 }
                 
             } catch (err) {

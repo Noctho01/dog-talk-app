@@ -15,9 +15,8 @@ class RoomServices extends InterfaceServices {
         return rooms;
     }
 
-    async getInRoom(roomName) {
-        const room = await this.dependences.repository.findOne({ name: roomName }, 'inRoom');
-        return room.inRoom
+    async getRoom(roomName) {
+        return await this.dependences.repository.findOne({ name: roomName }, 'inRoom limit');
     }   
 
     /**
@@ -37,6 +36,7 @@ class RoomServices extends InterfaceServices {
         if (!room.inRoom.some(user => user._id === userid )) return this.emit('error', new Error('este usuario não é um membro desta sala'));
         room.inRoom = room.inRoom.filter(user => user._id !== userid);
         await room.save();
+        console.log('canine profile deletado da sala')
         return this.emit(`update_${roomName.toLowerCase()}`);
     }
 }
@@ -52,4 +52,3 @@ roomServices.on('update_quintal', async () => await quintalServer.roomMembersNot
 roomServices.on('update_sala', async () => await salaServer.roomMembersNotify())
 roomServices.on('update_esquina', async () => await esquinaServer.roomMembersNotify())
 roomServices.on('update_cozinha', async () => await cozinhaServer.roomMembersNotify())
-roomServices.on('error', err => console.log('error aqui:', err))

@@ -18,15 +18,16 @@ export default async () => {
                 window.location.href = "/"
             }
 
+            localStorage.setItem('layerAtual', 'RoomsLayer');
+            window.location.href = "/"
             return { error: responseInJson.error, statusError: response.status }
 
-        } else if (responseInJson.canineProfile.breed) {
+        } else if (responseInJson.canineProfile && responseInJson.canineProfile.breed) {
             return { success: responseInJson.canineProfile }
         }
 
 
     } catch (err) {
-        console.log('3')
         return { error: err, statusError: 500 }
     }
 }

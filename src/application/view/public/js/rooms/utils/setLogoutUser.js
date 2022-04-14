@@ -15,7 +15,7 @@ export default async () => {
         if (responseInJson.error) return { error: responseInJson.error, statusError: response.status }
         if (responseInJson.message && responseInJson.message === 'user token deleted') {
             localStorage.setItem("layerAtual", "LoginLayer")
-            window.location.href = "/"
+            location.reload()
         }
 
     } catch (err) {

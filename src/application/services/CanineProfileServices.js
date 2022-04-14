@@ -68,12 +68,14 @@ class CanineProfileServices extends InterfaceServices {
     async findOne(userid) {
         const user = await this.dependences.repository.findById(userid );
         if (!user) return this.emit('error', new Error('Usuario não encontrado'));
+        if (!user.canineProfile.breed) return this.emit('error', new Error('Perfil não encontrado'));
         return user;
     }
 
     async delete(userid) {
         const resultDelete = await this.dependences.repository.deleteById(userid);
         if (!resultDelete.acknowledged) return this.emit('error', new Error('processo de deletar o perfil canino falhou'));
+        console.log('canine profile deletado de user')
     }
 }
 
@@ -82,5 +84,3 @@ export const canineProfileServices = new CanineProfileServices();
 
 const canineProfileRepository = new CanineProfileRepository(UserModel);
 canineProfileServices.injectionDependences({ repository: canineProfileRepository, axios });
-
-canineProfileServices.on('error', err => console.log('error aqui:', err))

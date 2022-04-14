@@ -7,9 +7,15 @@ export class CanineProfileController {
         const { roomName } = req.body;
         const { id: userid } = req.user;
         try {
-            const inRoom = await roomServices.getInRoom(roomName);
-            await canineProfileServices.create(userid, roomName, inRoom);
+            const room = await roomServices.getRoom(roomName);
             await roomServices.addInRoom(roomName, userid);
+            const roomcheck = await roomServices.getRoom(roomName);
+            if (roomcheck.inRoom.length > roomcheck.limit) {
+                await roomServices.removeInRoom(roomName, userid);
+                throw new Error(`${roomName} esta cheia`);
+            } else {
+                await canineProfileServices.create(userid, roomName, room.inRoom);
+            }
 
             return res
             .status(201)

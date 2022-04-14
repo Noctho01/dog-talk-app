@@ -23,15 +23,15 @@ export default async alertBox => {
             alertBox.innerHTML = `<p>${responseInJson.error} <i>Status Code <b>${response.status}</b></i></p>`
             
         } else if (responseInJson.email) {
-            if (responseInJson.canineProfile && responseInJson.canineProfile.breed) {
-                console.log(responseInJson)
-                localStorage.setItem('layerAtual', 'RoomChatLayer');
-                window.location.href = "/"
-
-            } else {
-                seuEmail.innerHTML = `Seu Email: <b><i>${responseInJson.email}</i></b>`;
-            }
-            
+            setTimeout(() => {
+                if (responseInJson.canineProfile && responseInJson.canineProfile.breed) {
+                    localStorage.setItem('layerAtual', 'RoomChatLayer');
+                    location.reload()
+    
+                } else {
+                    seuEmail.innerHTML = `Seu Email: <b><i>${responseInJson.email}</i></b>`;
+                }
+            }, 2000);
         }
 
     } catch (err) {

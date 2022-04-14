@@ -5,27 +5,6 @@ import { Wsclient } from "./wsclient/Wscliente.js";
 
 
 export default async () => {
-
-    //  EVENTS ------------------------------------------------------------------------------------------------------------------------------
-    document.getElementById("button_back").addEventListener('click', () => {
-        window.location.href = "/"
-        setTimeout(() => {
-            localStorage.setItem("layerAtual", "RoomsLayer")
-            window.location.href = "/"
-        }, 1000)
-    })
-
-    document.getElementById("button_logout").addEventListener('click', async () => {
-        await setLogoutUser()
-    })
-
-    window.onunload = () => {
-        localStorage.getItem("layerAtual") === "RoomChatLayer"
-        ? localStorage.setItem("layerAtual", "RoomsLayer")
-        : null
-    }
-
-
     // SET COMPONENTS ------------------------------------------------------------------------------------------------------------------------------
     Components.documents = {
         alertBox : document.getElementById("alert_box"),
@@ -57,7 +36,24 @@ export default async () => {
 
     function initWebSocketServerCommunication(roomName) {
         const wsclient = new Wsclient(`ws://localhost:3030/${roomName.toLowerCase()}`, Components);
-        wsclient.onopen = wsclient.init
         wsclient.onmessage = wsclient.message
+
+        //  EVENTS ------------------------------------------------------------------------------------------------------------------------------
+        document.getElementById("button_back").addEventListener('click', () => {
+            localStorage.setItem("layerAtual", "RoomsLayer")
+            location.reload()
+        })
+
+        document.getElementById("button_logout").addEventListener('click', async () => {
+            await setLogoutUser()
+        })
+
+        window.onunload = () => {
+            wsclient.close();
+            localStorage.getItem("layerAtual") === "RoomChatLayer"
+                ? localStorage.setItem("layerAtual", "RoomsLayer")
+                : null
+            
+        }
     }
 }

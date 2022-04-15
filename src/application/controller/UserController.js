@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import envConfig from '../../envConfig.js';
-import { Types } from '../model/database/db.js';
 import { Log as log} from '../../jobs/log.js';
 import { userServices } from '../services/UserServices.js';
 
@@ -10,7 +9,7 @@ export class UserController {
         const { email, password: pwdHash } = req.body;
         log.web('post', '/user', 201);
         try {            
-            await userServices.create({ id: new Types.ObjectId(), email, pwdHash });
+            await userServices.create({ email, pwdHash });
             return res
             .status(201)
             .set('Content-Type', 'application/json; charset=utf-8')

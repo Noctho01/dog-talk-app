@@ -34,53 +34,71 @@ export class Layers {
 
     static LoginLayer() {
         return {
-            head: `<title>Login Usuario</title>`,
+            head: `
+            <title>Login Usuario</title>
+            <link rel="stylesheet" href="./css/login/login.css">
+            `,
             body: `
-            <h1>Login Usuario</h1>
-            <div id="form">
-                <div class="input">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email">
+            <div id="block">
+                <div>
+                    <h1>L O G I N</h1>
                 </div>
-                <div class="input">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password">
+                <div id="form">
+                    <div class="input">
+                        <label for="email">email:</label>
+                        <input type="email" id="email" name="email">
+                    </div>
+                    <div class="input">
+                        <label for="password">password:</label>
+                        <input type="password" id="password" name="password">
+                    </div>
+                    <div class="button">
+                        <button id="buttonLogin">L O G I N</button>
+                    </div>
+                    <div class="button">
+                        <button id="button_register">R E G I S T E R</button>
+                    </div>
+                    <div id="alert_box"></div>
                 </div>
-                <div class="input">
-                    <button id="buttonLogin">Login</button>
-                </div>
-                <button id="button_register">register</button>
-                <div id="alert_box">
-                </div>
-            </div>`
+            </div>
+            `
         }
     }
 
     static RegisterLayer() {
         return {
-            head: `<title>Registro Usuario</title>`,
+            head: `
+            <title>Registro Usuario</title>
+            <link rel="stylesheet" href="./css/login/login.css">
+            `,
             body: `
-            <h1>Registro Usuario</h1>
-            <div id="form">
-                <div class="input">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email">
+            <div id="block">
+                <div>
+                    <h1>R E G I S T E R</h1>
                 </div>
-                <div class="input">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password">
+                <div id="form">
+                    <div class="input">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email">
+                    </div>
+                    <div class="input">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password">
+                    </div>
+                    <div class="input">
+                        <label for="passwordConfirm">Password Confirm:</label>
+                        <input type="password" id="passwordConfirm" name="passwordConfirm">
+                    </div>
+                    <div class="button">
+                        <button id="buttonCreate">R E G I S T E R</button>
+                    </div>
+                    <div class="button">
+                        <button id="buttonLogin">L O G I N</button>
+                    </div>
+                    <div id="alert_box"></div>
                 </div>
-                <div class="input">
-                    <label for="passwordConfirm">Password Confirm:</label>
-                    <input type="password" id="passwordConfirm" name="passwordConfirm">
-                </div>
-                <div class="input">
-                    <button id="buttonCreate">Create</button>
-                </div>
-
-                <div id="alert_box">
-                </div>
-            </div>`
+            </div>
+            `
         }
     }
 

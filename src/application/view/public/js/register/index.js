@@ -7,7 +7,7 @@ export default () => {
 
         alertBox.innerHTML = ""
 
-        if (!emailVal || !passwordVal || !passwordConfirmVal || emailVal === "" || passwordVal === "" || passwordConfirmVal === "") {
+        if (emailVal === null || !emailVal || !passwordVal || !passwordConfirmVal || emailVal === "" || passwordVal === "" || passwordConfirmVal === "") {
             alertBox.innerHTML += "<p>Preencha todos os campos para continuar</p>";
 
         } else if (passwordVal !== passwordConfirmVal) {

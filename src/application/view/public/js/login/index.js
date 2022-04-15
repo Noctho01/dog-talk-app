@@ -1,13 +1,13 @@
 export default () => {
+    document.getElementById("button_register").addEventListener('click', async () => {
+        localStorage.setItem("layerAtual", "RegisterLayer");
+        location.reload();
+    });
+
     document.getElementById("buttonLogin").addEventListener('click', async ()=> {
         const emailVal = document.getElementById("email").value;
         const passwordVal = document.getElementById("password").value;
         const alertBox = document.getElementById("alert_box");
-
-        document.getElementById("button_register").addEventListener('click', async () => {
-            localStorage.setItem("layerAtual", "RegisterLayer")
-            location.reload();
-        })
 
         alertBox.innerHTML = ""
 

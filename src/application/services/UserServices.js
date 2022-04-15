@@ -1,5 +1,6 @@
 import { InterfaceServices } from "./InterfaceServices.js";
 import { UserModel } from "../model/UserModel.js";
+import { Types } from '../model/database/db.js';
 import { UserRepository } from "../repository/UserRepository.js";
 
 class UserServices extends InterfaceServices {
@@ -21,8 +22,16 @@ class UserServices extends InterfaceServices {
      * @returns {void}
      */
     async create(newuser) {
-        const user = await this.dependences.repository.findOne({ _id: newuser.id }, 'email');
-        if (user || user.email === newuser.email) return this.emit('error', new Error('Este usuario já existe'));
+        let useridExist = true;
+
+        do {
+            newuser.id = new Types.ObjectId();
+            useridExist = await this.dependences.repository.findOne({ _id: newuser.id }, 'email');
+        } while (useridExist);
+
+        const useremailExist = await this.dependences.repository.findOne({ email: newuser.email }, 'email');
+        if (useremailExist && useremailExist.email === newuser.email) return this.emit('error', new Error('Este usuario já existe'));
+
         await this.dependences.repository.create({
             _id: newuser.id,
             email: newuser.email,
